@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 import json
 import os
 import hashlib
@@ -159,7 +159,15 @@ def api_content(token, chapter):
 
 @app.route("/")
 def home():
+    if request.cookies.get("zino_visited") == "true":
+        return redirect("/home")
     return render_template("splash.html")
+
+@app.route("/set-visited")
+def set_visited():
+    response = redirect("/home")
+    response.set_cookie("zino_visited", "true", max_age=60*60*24*365)
+    return response
 
 @app.route("/home")
 def real_home():
@@ -255,4 +263,6 @@ def get_notices():
         return jsonify([])
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    import os
+port = int(os.environ.get("PORT", 5000))
+app.run(host="0.0.0.0", port=port)

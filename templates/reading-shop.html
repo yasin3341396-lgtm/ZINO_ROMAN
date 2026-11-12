@@ -128,7 +128,46 @@
     color:#c39bff;
   }
 </style>
+
+
+<style>
+  /* انیمیشن ورود نرم برای محتوا */
+  @keyframes smoothFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* اعمال به تمام المان‌های اصلی بدنه */
+  body > * {
+    animation: smoothFadeIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  /* اعمال به محتوای داخل main و دیگر کانتینرها */
+  main > *, 
+  .hero > *, 
+  .grid > *, 
+  .list > *,
+  .chapters > *,
+  .player,
+  .modal-box,
+  .warning-box {
+    animation: smoothFadeIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  /* اعمال به صفحه‌های خاص مثل خواندن */
+  .reader, .info, .actions, .item {
+    animation: smoothFadeIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+</style>
 </head>
+
+
 <body>
 
   <header class="top-bar">
@@ -288,5 +327,15 @@
   updateCoins();
 </script>
 
+
+<script>
+  // حالت تمام‌صفحه خودکار (با اولین کلیک)
+  document.addEventListener('click', function() {
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch((err) => {});
+    }
+  }, { once: true });
+</script>
 </body>
+
 </html>
