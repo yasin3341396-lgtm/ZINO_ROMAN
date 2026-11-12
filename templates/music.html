@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>موزیک ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:12px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.player{
+ padding:14px;
+ border-radius:18px;
+ border:1px solid #7b2ff7;
+ background:#1b0d2e;
+ margin-bottom:18px;
+}
+.now{
+ font-size:14px;
+ font-weight:bold;
+ color:#d9c6ff;
+ margin:0 0 10px;
+}
+audio{width:100%}
+.list{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+}
+.song{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:12px;
+ border-radius:14px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ color:#f2eaff;
+ cursor:pointer;
+}
+.song.active{
+ border-color:#7b2ff7;
+ background:#2b1447;
+}
+.song span{font-size:13px;font-weight:bold}
+.song small{color:#a68abb;font-size:11px}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/" aria-label="بازگشت">→</a>
+ <h1>موزیک</h1>
+</header>
+
+<main>
+ <div class="player">
+  <p class="now" id="nowPlaying">آهنگی انتخاب نشده</p>
+<audio id="player" controls autoplay loop></audio>
+ </div>
+
+ <div class="list" id="songList"></div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const songs = [
+ {name:"آهنگ یک", file:"song1.mp3"},
+ {name:"آهنگ دو", file:"song2.mp3"},
+ {name:"آهنگ سه", file:"song3.mp3"},
+ {name:"آهنگ چهار", file:"song4.mp3"},
+ {name:"آهنگ پنج", file:"song5.mp3"}
+];
+
+const player = document.getElementById("player");
+const nowPlaying = document.getElementById("nowPlaying");
+const songList = document.getElementById("songList");
+
+function playSong(index){
+ const song = songs[index];
+ player.src = `/static/music/${song.file}`;
+ nowPlaying.textContent = song.name;
+ player.load();
+ player.play();
+
+ document.querySelectorAll(".song").forEach((item, i) => {
+  item.classList.toggle("active", i === index);
+ });
+}
+
+songs.forEach((song, index) => {
+ const button = document.createElement("button");
+ button.className = "song";
+
+ const name = document.createElement("span");
+ name.textContent = song.name;
+
+ const number = document.createElement("small");
+ number.textContent = `آهنگ ${index + 1}`;
+
+ button.append(name, number);
+ button.addEventListener("click", () => playSong(index));
+ songList.append(button);
+});
+
+player.addEventListener("ended", () => {
+ const active = document.querySelector(".song.active");
+ const index = active ? Array.from(songList.children).indexOf(active) : -1;
+ const next = (index + 1) % songs.length;
+ playSong(next);
+});
+</script>
+</body>
+</html>

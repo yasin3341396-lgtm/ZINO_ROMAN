@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    height: 100vh;
+    height: 100dvh;
+    background: radial-gradient(circle at center, #1b0d2e 0%, #0b0614 100%);
+    color: #f2eaff;
+    font-family: Tahoma, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* آیکون برنامه */
+  .app-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 28px;
+    box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4);
+    animation: pulse 2s infinite ease-in-out;
+    margin-bottom: 25px;
+    object-fit: cover;
+    border: 2px solid rgba(195, 155, 255, 0.3);
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(123, 47, 247, 0.7); }
+    100% { transform: scale(1); box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4); }
+  }
+
+  /* متن متغیر */
+  .quote-text {
+    font-size: 16px;
+    color: #c39bff;
+    text-align: center;
+    padding: 0 30px;
+    min-height: 50px;
+    font-weight: bold;
+    line-height: 1.6;
+  }
+
+  /* پایین صفحه - لودینگ */
+  .bottom-container {
+    position: absolute;
+    bottom: 80px;
+    width: 100%;
+    max-width: 350px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loading-track {
+    width: 100%;
+    height: 12px;
+    background: #26103e;
+    border-radius: 10px;
+    position: relative;
+    border: 1px solid #583077;
+    margin-bottom: 10px;
+  }
+
+  .loading-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #7b2ff7, #c39bff);
+    border-radius: 10px;
+    transition: width 0.1s linear;
+  }
+
+  /* ادمک متحرک */
+  .stickman-container {
+    position: absolute;
+    top: -35px; /* بالای نوار */
+    right: 0%; /* شروع از راست (چون RTL) */
+    transition: right 0.1s linear;
+    transform: translateX(50%);
+    width: 45px;
+    height: 45px;
+  }
+  
+  .stickman {
+    width: 100%;
+    height: 100%;
+    animation: walk 0.6s infinite alternate ease-in-out;
+  }
+
+  @keyframes walk {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: #a68abb;
+    font-weight: bold;
+  }
+
+  /* امضای پایین */
+  .footer-sign {
+    position: absolute;
+    bottom: 20px;
+    text-align: center;
+    font-size: 11px;
+    color: #a68abb;
+    line-height: 1.8;
+  }
+  .footer-sign strong { color: #c39bff; }
+
+  /* مودال هشدار ۱۸+ */
+  .warning-modal {
+    display: none;
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(11, 6, 20, 0.95);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .warning-box {
+    background: #1b0d2e;
+    border: 2px solid #7b2ff7;
+    border-radius: 24px;
+    padding: 30px 20px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(123, 47, 247, 0.3);
+    animation: popIn 0.4s ease;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .warning-box h2 {
+    color: #ff5252;
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  .warning-box p {
+    color: #cbb5e9;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .warning-box button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #7b2ff7, #c39bff);
+    color: white;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+  <!-- آیکون برنامه -->
+  <img src="{{ url_for('static', filename='icon.png') }}" alt="ZINO ROMAN" class="app-icon">
+
+  <!-- متن متغیر -->
+  <div class="quote-text" id="quoteText">در حال آماده‌سازی...</div>
+
+  <!-- پایین صفحه - لودینگ -->
+  <div class="bottom-container">
+    <div class="loading-track">
+      <!-- ادمک SVG -->
+      <div class="stickman-container" id="stickman">
+        <svg class="stickman" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- سر -->
+          <circle cx="25" cy="10" r="6" stroke="#c39bff" stroke-width="3"/>
+          <!-- بدن -->
+          <line x1="25" y1="16" x2="25" y2="30" stroke="#c39bff" stroke-width="3" stroke-linecap="round"/>
+          <!-- دست‌ها -->
+          <line x1="25" y1="22" x2="15" y2="28" stroke="#c39bff" stroke-width="3" stroke-linecap="round"/>
+          <line x1="25" y1="22" x2="35" y2="18" stroke="#c39bff" stroke-width="3" stroke-linecap="round"/>
+          <!-- پاها -->
+          <line x1="25" y1="30" x2="18" y2="42" stroke="#c39bff" stroke-width="3" stroke-linecap="round"/>
+          <line x1="25" y1="30" x2="32" y2="42" stroke="#c39bff" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      
+      <div class="loading-fill" id="loadingFill"></div>
+    </div>
+    <div class="loading-text" id="loadingText">0%</div>
+  </div>
+
+  <!-- امضای برنامه -->
+  <div class="footer-sign">
+    <strong>ZINO ROMAN</strong><br>
+    تاریخ ساخت: 2026/11/09
+  </div>
+
+  <!-- مودال هشدار (فقط بار اول) -->
+  <div class="warning-modal" id="warningModal">
+    <div class="warning-box">
+      <h2>توجه توجه ⚠️</h2>
+      <p>
+        به دنیای <b>ZINO ROMAN</b> خوش آمدید!<br><br>
+        لطفاً توجه داشته باشید که تمامی رمان‌های این مجموعه <b>بدون سانسور</b> و با محتوای بزرگسالان (۱۸+) می‌باشند. 
+        خواندن این داستان‌ها برای افراد زیر سن قانونی و یا افرادی که به محتوای هیجانی و ترسناک حساس هستند، توصیه نمی‌شود.
+        <br><br>
+        با ورود به برنامه، تایید می‌کنید که بالای ۱۸ سال سن دارید.
+      </p>
+      <button id="acceptBtn">تایید و ورود</button>
+    </div>
+  </div>
+
+<script>
+  // ===== ۱. شروع لودینگ =====
+  function startLoading() {
+    const quotes = [
+      "دنیای ترس و دلهره در انتظار شماست... 👻",
+      "عشق را در صفحات کتاب‌ها جستجو کن... ❤️",
+      "به زینو رمان خوش آمدید... 📚",
+      "هر کتاب، یک سفر جدید است... ✨",
+      "با هیجان‌ترین رمان‌ها آشنا شوید... 🔥"
+    ];
+    document.getElementById("quoteText").textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+    const duration = 7000; // ۷ ثانیه
+    const interval = 50; // هر ۵۰ میلی‌ثانیه
+    const step = 100 / (duration / interval);
+    let progress = 0;
+
+    const fillEl = document.getElementById("loadingFill");
+    const textEl = document.getElementById("loadingText");
+    const stickman = document.getElementById("stickman");
+
+    const timer = setInterval(() => {
+      progress += step;
+      if (progress > 100) progress = 100;
+
+      fillEl.style.width = progress + "%";
+      stickman.style.right = progress + "%";
+      textEl.textContent = Math.floor(progress) + "%";
+
+      if (progress >= 100) {
+        clearInterval(timer);
+        setTimeout(() => {
+          window.location.href = "/home"; // انتقال به صفحه اصلی
+        }, 300);
+      }
+    }, interval);
+  }
+
+  // ===== ۲. مدیریت هشدار بار اول =====
+  function showWarningIfNeeded() {
+    const hasSeenWarning = localStorage.getItem("zino_warning_seen");
+    
+    if (!hasSeenWarning) {
+      document.getElementById("warningModal").style.display = "flex";
+      
+      document.getElementById("acceptBtn").addEventListener("click", () => {
+        localStorage.setItem("zino_warning_seen", "true");
+        document.getElementById("warningModal").style.display = "none";
+        startLoading(); // شروع لودینگ بعد از تایید
+      });
+    } else {
+      startLoading(); // اگر قبلا دیده، مستقیم لودینگ
+    }
+  }
+
+  // ===== ۳. اجرا =====
+  showWarningIfNeeded();
+</script>
+</body>
+</html>

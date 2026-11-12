@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>جست‌وجو | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:12px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.search-box{
+ margin-bottom:18px;
+}
+input{
+ width:100%;
+ padding:14px;
+ border-radius:14px;
+ border:1px solid #7b2ff7;
+ background:#1b0d2e;
+ color:#f2eaff;
+ font-size:15px;
+}
+.results{
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+}
+.result{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:14px;
+ border-radius:16px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ color:#f2eaff;
+ text-decoration:none;
+}
+.result span{
+ font-size:14px;
+ font-weight:bold;
+ color:#d9c6ff;
+}
+.result small{
+ color:#a68abb;
+ font-size:11px;
+}
+.empty{
+ text-align:center;
+ color:#a68abb;
+ font-size:13px;
+ margin-top:20px;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/" aria-label="بازگشت">→</a>
+ <h1>جست‌وجو</h1>
+</header>
+
+<main>
+ <div class="search-box">
+  <input type="search" id="searchInput" placeholder="نام رمان را جست‌وجو کن">
+ </div>
+
+ <div class="results" id="results"></div>
+ <p class="empty" id="empty">نام رمان را بنویس…</p>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const novels = {
+ love:[
+  "کافه کوچه","شاه ماهی","رزیتا","اشک های ماه","آیین دلبر","سوگند یک اورک","به طعم تمشک","آریل","ته دیگمو پس بده"
+ ],
+ horror:[
+  "اتاق کاهگلی۱","اتاق کاهگلی۲","خط خون","هیولا شناس۱","هیولا شناس۲","هیولا شناس۳","ساداکو","کابوس زدگان","کورالین"
+ ],
+ sad:[
+  "نمیزارم بری","اشک عروسک","مرگ ماهی","از بام تا اسمان","دل من","کجای زندگیمی تو","نفسمو ازم نگیر","میراث من عذاب","رویای خیس"
+ ],
+ comedy:[
+  "بچه خوک","جادوی زمان","ابنبات هل دار","ابنبات پسته ای","ابنبات دارچینی","ابنبات نارگیلی","ابنبات لیمویی","نقاب ششم","ابلیس ساده لوح"
+ ],
+ thriller:[
+  "اغوش گل یخ","همسر شیطان۱","همسر شیطان۲","عشق شیطان و ملکه شیطان","قبر های خالی","خورشید من","پوکر","عشقی که تبخیر شد","گرگ بند"
+ ],
+ mystery:[
+  "در جستجوی دنیای گمشده","سایه و استخوان۱","محاصره و طوفان۲","ویرانی و قیام۳","قلب جوهری۱","طلسم جوهری۲","مرگ جوهری۳","هزار قدم در دل شب","طیف سرد"
+ ]
+};
+
+const genreNames = {
+ love:"عشق و عاشقی",
+ horror:"ترس و دلهره",
+ sad:"اشک و غمگین",
+ comedy:"کمدی و طنز",
+ thriller:"هیجان و پلیسی",
+ mystery:"ماجراجویی و معمایی"
+};
+
+const input = document.getElementById("searchInput");
+const results = document.getElementById("results");
+const empty = document.getElementById("empty");
+
+function search(){
+ const value = input.value.trim();
+ results.replaceChildren();
+
+ if(!value){
+  empty.textContent = "نام رمان را بنویس…";
+  return;
+ }
+
+ let found = 0;
+
+ Object.keys(novels).forEach(genre => {
+  novels[genre].forEach((name, index) => {
+   if(name.includes(value)){
+    found++;
+
+    const link = document.createElement("a");
+    link.className = "result";
+    link.href = `/chapters?genre=${genre}&novel=${index}`;
+
+    const title = document.createElement("span");
+    title.textContent = name;
+
+    const genreText = document.createElement("small");
+    genreText.textContent = genreNames[genre];
+
+    link.append(title, genreText);
+    results.append(link);
+   }
+  });
+ });
+
+ empty.textContent = found ? "" : "رمانی پیدا نشد.";
+}
+
+input.addEventListener("input", search);
+</script>
+</body>
+</html>

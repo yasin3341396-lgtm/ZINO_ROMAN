@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>پخش صوتی | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:10px}
+h1{font-size:18px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.player{
+ padding:40px 20px;
+ border-radius:20px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ text-align:center;
+ margin-bottom:20px;
+}
+.player .icon{
+ font-size:70px;
+ margin-bottom:20px;
+}
+.player h2{
+ color:#c39bff;
+ font-size:20px;
+ margin:0 0 12px;
+}
+.player p{
+ color:#a68abb;
+ font-size:14px;
+ line-height:1.8;
+ margin:0 0 24px;
+}
+.back-btn{
+ display:inline-block;
+ padding:12px 24px;
+ border-radius:14px;
+ background:#26103e;
+ border:1px solid #7b2ff7;
+ color:#d9c6ff;
+ text-decoration:none;
+ font-size:14px;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" id="backLink" href="/audio-chapters">→</a>
+ <h1 id="chapterTitle">پخش صوتی</h1>
+</header>
+
+<main>
+ <div class="player" id="playerBox">
+  <div class="icon">🎧</div>
+  <h2 id="novelTitle">—</h2>
+  <p id="chapterName">—</p>
+  <p>به‌زودی...</p>
+ </div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const params = new URLSearchParams(location.search);
+const genre = params.get("genre") || "love";
+const novel = params.get("novel") || "0";
+const chapter = params.get("chapter") || "intro";
+
+const novelNames = {
+ love:["کافه کوچه","شاه ماهی","رزیتا","اشک های ماه","آیین دلبر","سوگند یک اورک","به طعم تمشک","آریل","ته دیگمو پس بده"],
+ horror:["اتاق کاهگلی۱","اتاق کاهگلی۲","خط خون","هیولا شناس۱","هیولا شناس۲","هیولا شناس۳","ساداکو","کابوس زدگان","کورالین"],
+ sad:["نمیزارم بری","اشک عروسک","مرگ ماهی","از بام تا اسمان","دل من","کجای زندگیمی تو","نفسمو ازم نگیر","میراث من عذاب","رویای خیس"],
+ comedy:["بچه خوک","جادوی زمان","ابنبات هل دار","ابنبات پسته ای","ابنبات دارچینی","ابنبات نارگیلی","ابنبات لیمویی","نقاب ششم","ابلیس ساده لوح"],
+ thriller:["اغوش گل یخ","همسر شیطان۱","همسر شیطان۲","عشق شیطان و ملکه شیطان","قبر های خالی","خورشید من","پوکر","عشقی که تبخیر شد","گرگ بند"],
+ mystery:["در جستجوی دنیای گمشده","سایه و استخوان۱","محاصره و طوفان۲","ویرانی و قیام۳","قلب جوهری۱","طلسم جوهری۲","مرگ جوهری۳","هزار قدم در دل شب","طیف سرد"]
+};
+
+const novelName = (novelNames[genre] || [])[parseInt(novel)] || "رمان";
+document.getElementById("novelTitle").textContent = novelName;
+
+const chapterName = chapter === "intro" ? "مقدمه" : "فصل " + chapter;
+document.getElementById("chapterName").textContent = chapterName;
+document.getElementById("chapterTitle").textContent = chapterName;
+
+document.getElementById("backLink").href = `/audio-chapters?genre=${genre}&novel=${novel}`;
+
+// همه رمان‌های صوتی فعلاً قفل هستند
+const playerBox = document.getElementById("playerBox");
+playerBox.innerHTML = `
+    <div class="icon">🔒</div>
+    <h2>به‌زودی...</h2>
+    <p>فایل صوتی این بخش هنوز آماده نشده است.<br>به‌زودی در دسترس قرار می‌گیرد.</p>
+    <a href="/audio-chapters?genre=${genre}&novel=${novel}" class="back-btn">بازگشت به فصل‌ها</a>
+`;
+</script>
+</body>
+</html>

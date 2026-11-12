@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>رمان‌ها | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin-bottom:18px;
+}
+h1{
+ font-size:20px;
+ color:#c39bff;
+ margin:0;
+}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.icons{
+ display:flex;
+ gap:8px;
+ margin-inline-start:auto;
+}
+.icon{
+ width:42px;
+ height:42px;
+ border:1px solid #583077;
+ border-radius:14px;
+ background:#1b0d2e;
+ color:#eadcff;
+ font-size:16px;
+ cursor:pointer;
+}
+.chips{
+ display:flex;
+ gap:8px;
+ overflow-x:auto;
+ padding-bottom:6px;
+ margin-bottom:18px;
+ scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+ padding:9px 14px;
+ border-radius:999px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ color:#eadcff;
+ font-size:12px;
+ white-space:nowrap;
+ text-decoration:none;
+}
+.chip.active{
+ background:#7b2ff7;
+ border-color:#7b2ff7;
+ color:#fff;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.novel{
+ display:block;
+ border-radius:16px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ color:#f2eaff;
+ text-decoration:none;
+ overflow:hidden;
+}
+.cover{
+ aspect-ratio:1/1;
+ width:100%;
+ object-fit:cover;
+ display:block;
+}
+
+.info{
+ padding:8px;
+}
+.name{
+ font-size:12px;
+ font-weight:bold;
+ color:#d9c6ff;
+ margin:0 0 3px;
+}
+.meta{
+ font-size:10px;
+ color:#a68abb;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/" aria-label="بازگشت">→</a>
+ <h1>رمان‌ها</h1>
+ <div class="icons">
+  <button class="icon" aria-label="جست‌وجو" onclick="location.href='/search'">🔍</button>
+  <button class="icon" aria-label="موزیک" onclick="window.open('/music','zinoMusic')">🎵</button>
+  <button class="icon" aria-label="اعلانات" onclick="location.href='/notifications'">🔔</button>
+ </div>
+</header>
+
+<main>
+ <div class="chips">
+  <a class="chip active" href="/novels?genre=love">عشق و عاشقی</a>
+  <a class="chip" href="/novels?genre=horror">ترس و دلهره</a>
+  <a class="chip" href="/novels?genre=sad">اشک و غمگین</a>
+  <a class="chip" href="/novels?genre=comedy">کمدی و طنز</a>
+  <a class="chip" href="/novels?genre=thriller">هیجان و پلیسی</a>
+  <a class="chip" href="/novels?genre=mystery">ماجراجویی و معمایی</a>
+ </div>
+
+ <div class="grid" id="novelGrid"></div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const genre = new URLSearchParams(location.search).get("genre") || "love";
+
+const novels = {
+ love:[
+  "کافه کوچه","شاه ماهی","رزیتا","اشک های ماه","آیین دلبر","سوگند یک اورک","به طعم تمشک","آریل","ته دیگمو پس بده"
+ ],
+ horror:[
+  "اتاق کاهگلی۱","اتاق کاهگلی۲","خط خون","هیولا شناس۱","هیولا شناس۲","گورستان","وحشت در جنگل","کژال منی","کورالین"
+ ],
+ sad:[
+  "نمیزارم بری","اشک عروسک","مرگ ماهی","از بام تا اسمان","دل من","کجای زندگیمی تو","نفسمو ازم نگیر","میراث من عذاب","رویای خیس"
+ ],
+ comedy:[
+  "بچه خوک","جادوی زمان","همکارم میشی","طرار","شیاطین سیاه","تلافی تا نابودی","کلاهداران","نقاب ششم","ابلیس ساده لوح"
+ ],
+ thriller:[
+  "اغوش گل یخ","همسر شیطان۱","همسر شیطان۲","عشق شیطان و ملکه شیطان","قبر های خالی","خورشید من","پوکر","عشقی که تبخیر شد","گرگ بند"
+ ],
+ mystery:[
+  "بغض پر عصیان","زیر ایوان ماه","نفس نفس دل","ویرانی و قیام۳","بلاک کد","پشت پلک باران","دختران خاموش۱","دختران خاموش۲","طیف سرد"
+ ]
+};
+
+const grid = document.getElementById("novelGrid");
+
+novels[genre].forEach((name, index) => {
+ const link = document.createElement("a");
+ link.className = "novel";
+ link.href = `/audio-chapters?genre=${genre}&novel=${index}`;
+
+ const img = document.createElement("img");
+ img.className = "cover";
+ img.src = `/static/covers/${genre}-${index}.jpg`;
+ img.alt = name;
+
+ const info = document.createElement("div");
+ info.className = "info";
+
+ const title = document.createElement("p");
+ title.className = "name";
+ title.textContent = name;
+
+ const meta = document.createElement("p");
+ meta.className = "meta";
+ meta.textContent = "۹ فصل";
+
+ info.append(title, meta);
+ link.append(img, info);
+ grid.append(link);
+});
+</script>
+</body>
+</html>

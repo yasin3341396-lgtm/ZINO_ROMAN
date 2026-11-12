@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
+  }
+
+  body {
+    min-height:100vh;
+    background:#0b0614;
+    color:#f2eaff;
+    display:flex;
+    flex-direction:column;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+  }
+
+  .top-bar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+
+  .icon-btn {
+    width:48px;
+    height:48px;
+    border-radius:15px;
+    border:1px solid rgba(123,47,247,.55);
+    background:linear-gradient(145deg,#1b0d2e,#2b1049);
+    box-shadow:
+      0 8px 18px rgba(0,0,0,.45),
+      inset 0 1px 0 rgba(255,255,255,.14);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+
+  .icon-btn svg {
+    width:24px;
+    height:24px;
+    filter:drop-shadow(0 2px 5px rgba(123,47,247,.75));
+  }
+
+  .premium-box {
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:9px 12px;
+    border-radius:999px;
+    border:1px solid rgba(165,91,255,.55);
+    background:linear-gradient(90deg,rgba(123,47,247,.18),rgba(165,91,255,.10));
+    box-shadow:0 6px 18px rgba(123,47,247,.25);
+    cursor:pointer;
+  }
+
+  .premium-text {
+    font-size:12px;
+    font-weight:bold;
+    color:#d9c6ff;
+    white-space:nowrap;
+  }
+
+  .coin-count {
+    font-size:13px;
+    font-weight:bold;
+    color:#ffd76a;
+  }
+
+  .coin-icon {
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#ffe58a,#f5b301 55%,#b87900);
+    box-shadow:
+      0 3px 8px rgba(0,0,0,.45),
+      inset 0 2px 3px rgba(255,255,255,.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:bold;
+    color:#5b3a00;
+  }
+
+  .hero {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:16px 0;
+  }
+
+  .app-icon {
+    width:82px;
+    height:82px;
+    border-radius:22px;
+    box-shadow:
+      0 0 26px rgba(123,47,247,.45),
+      0 10px 22px rgba(0,0,0,.45);
+    margin-bottom:16px;
+  }
+
+  .app-title {
+    font-size:30px;
+    font-weight:bold;
+    letter-spacing:2px;
+    background:linear-gradient(90deg,#c39bff,#a55bff,#7b2ff7);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:10px;
+  }
+
+  .quote {
+    min-height:44px;
+    color:#c9b6e6;
+    font-size:14px;
+    line-height:1.7;
+    max-width:320px;
+    margin-bottom:24px;
+    transition:opacity .4s ease;
+  }
+
+  .menu {
+    width:100%;
+    max-width:340px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .main-btn {
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:bold;
+    color:#fff;
+    cursor:pointer;
+    background:linear-gradient(90deg,#7b2ff7,#a55bff);
+    box-shadow:0 10px 24px rgba(123,47,247,.35);
+  }
+
+  .secondary-btn {
+    width:100%;
+    padding:14px;
+    border-radius:16px;
+    font-size:15px;
+    font-weight:bold;
+    color:#d9c6ff;
+    background:transparent;
+    border:1px solid rgba(123,47,247,.55);
+    cursor:pointer;
+  }
+
+  .reward-btn {
+    width:100%;
+    padding:14px;
+    border-radius:16px;
+    font-size:15px;
+    font-weight:bold;
+    color:#ffe58a;
+    cursor:pointer;
+    border:1px solid rgba(245,179,1,.55);
+    background:linear-gradient(90deg,rgba(245,179,1,.15),rgba(123,47,247,.15));
+    box-shadow:0 8px 20px rgba(245,179,1,.18);
+  }
+
+  .hidden {
+    display:none !important;
+  }
+
+  .footer {
+    margin-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#8f7bb0;
+    line-height:1.6;
+  }
+
+  .footer strong {
+    color:#c39bff;
+    letter-spacing:1px;
+  }
+.announcements {
+  width:100%;
+  max-width:340px;
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(123,47,247,.45);
+  background:rgba(123,47,247,.08);
+  text-align:right;
+}
+
+.announcements h2 {
+  font-size:15px;
+  color:#c39bff;
+  margin-bottom:8px;
+}
+
+.announcement-list {
+  max-height:120px;
+  overflow-y:auto;
+  font-size:13px;
+  color:#d9c6ff;
+  line-height:1.7;
+}
+
+.announcement-list p {
+  margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+<button class="icon-btn" aria-label="تنظیمات" onclick="location.href='/settings'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c39bff" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.37.4.68.74.9.3.18.65.28 1.01.28H21a2 2 0 1 1 0 4h-.09c-.36 0-.71.1-1.01.28-.34.22-.6.53-.74.9z"></path>
+      </svg>
+    </button>
+
+<button class="premium-box" id="premiumBox" aria-label="اشتراک پرمیوم و فروشگاه سکه" onclick="location.href='/premium'">
+      <span class="premium-text">اشتراک پرمیوم</span>
+      <span class="coin-count" id="coinCount">100</span>
+      <span class="coin-icon">Z</span>
+    </button>
+
+<button class="icon-btn" aria-label="پروفایل" onclick="location.href='/profile'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c39bff" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main class="hero">
+    <img class="app-icon" src="{{ url_for('static', filename='icon.png') }}" alt="ZINO ROMAN">
+
+    <h1 class="app-title">ZINO ROMAN</h1>
+
+    <p class="quote" id="quote">دنیای رمان‌ها را با سبکی شیک بخوان</p>
+
+    <div class="menu">
+<button class="main-btn" onclick="location.href='/genres'">ژانرها</button>
+<button class="secondary-btn" onclick="location.href='/store'">فروشگاه زینو</button>
+      <button class="reward-btn" id="dailyReward">دریافت سکهٔ روزانه</button>
+<section class="announcements">
+  <h2>اعلانات</h2>
+  <div class="announcement-list">
+    <p>به ZINO ROMAN خوش آمدی! نسخهٔ اول برنامه آمادهٔ تست است.</p>
+  </div>
+</section>
+    </div>
+  </main>
+<button class="icon" aria-label="موزیک" onclick="window.open('/music','zinoMusic')">🎵</button>
+
+  <footer class="footer">
+    <strong>ZINO ROMAN</strong><br>
+    تاریخ ساخت: 2026/11/09
+  </footer>
+<script>
+const rewardButton = document.getElementById("dailyReward");
+const today = new Date().toDateString();
+const lastReward = localStorage.getItem("zinoLastReward");
+let coins = Number(localStorage.getItem("zinoCoins") || 0);
+
+function updateReward(){
+  if(lastReward === today){
+    rewardButton.textContent = "امروز دریافت شد";
+    rewardButton.disabled = true;
+  }else{
+    rewardButton.textContent = "دریافت سکهٔ روزانه";
+    rewardButton.disabled = false;
+  }
+}
+
+rewardButton.addEventListener("click", () => {
+  if(lastReward === today) return;
+
+  coins += 50;
+  localStorage.setItem("zinoCoins", coins);
+  localStorage.setItem("zinoLastReward", today);
+  updateReward();
+});
+
+updateReward();
+
+const quotes = [
+  "دنیای رمان‌ها را با سبکی شیک بخوان",
+  "هر رمان، دنیایی تازه برای کشف کردن است",
+  "از میان کلمات، به قصه‌های بی‌پایان سفر کن",
+  "عشق، راز و ماجراجویی؛ همه در ZINO ROMAN",
+  "لحظه‌ات را به یک داستان خوب بسپار",
+  "رمان بعدی‌ات را همین‌جا پیدا کن"
+];
+
+let quoteIndex = 0;
+const quoteElement = document.getElementById("quote");
+
+function changeQuote(){
+  quoteElement.style.opacity = "0";
+
+  setTimeout(() => {
+    quoteIndex = (quoteIndex + 1) % quotes.length;
+    quoteElement.textContent = quotes[quoteIndex];
+    quoteElement.style.opacity = "1";
+  }, 400);
+}
+
+setInterval(changeQuote, 5000);
+</script>
+
+</body>
+</html>

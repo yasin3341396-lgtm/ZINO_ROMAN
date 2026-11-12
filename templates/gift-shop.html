@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+ content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>فروشگاه گیفت | ZINO ROMAN</title>
+<link rel="icon"
+ href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:12px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.balance{
+ padding:14px;
+ border:1px solid #72502b;
+ border-radius:16px;
+ color:#ffdc83;
+ background:#22182a;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;
+}
+.card{
+ min-width:0;
+ padding:16px 10px;
+ text-align:center;
+ border:1px solid #583077;
+ border-radius:20px;
+ background:linear-gradient(145deg,#301445,#150a24);
+ box-shadow:0 9px 0 #08030e,0 15px 25px #0005;
+}
+.art{
+ display:block;
+ margin:8px auto 16px;
+ font-size:48px;
+ filter:drop-shadow(0 7px 3px #0008);
+ animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+ 50%{transform:translateY(-5px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .art{animation:none}
+}
+.card h2{font-size:14px}
+.price{color:#ffdc83;font-size:13px}
+button{
+ width:100%;
+ padding:12px;
+ border:0;
+ border-radius:12px;
+ color:white;
+ font:inherit;
+ font-size:13px;
+ cursor:pointer;
+ background:linear-gradient(135deg,#913cff,#6222af);
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+.quantity{font-size:12px;color:#cbb5e9}
+#status{min-height:24px;font-size:13px;color:#ffdc83}
+footer{
+ margin-top:auto;
+ padding-top:28px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/store" aria-label="بازگشت">→</a>
+ <h1>فروشگاه گیفت</h1>
+</header>
+
+<main>
+ <p class="balance">
+   موجودی: <strong id="coins">۰</strong> سکه
+ </p>
+ <p id="status" role="status" aria-live="polite"></p>
+ <div class="grid" id="gifts"></div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+<script>
+const gifts = [
+ {id:"rose",name:"گل رز",icon:"🌹",price:20},
+ {id:"bouquet",name:"دسته‌گل",icon:"💐",price:80},
+ {id:"heart",name:"قلب بنفش",icon:"💜",price:50},
+ {id:"sparkle",name:"قلب درخشان",icon:"💖",price:120},
+ {id:"crown",name:"تاج سلطنتی",icon:"👑",price:300},
+ {id:"diamond",name:"الماس زینو",icon:"💎",price:500},
+ {id:"royal",name:"بستهٔ رویال",icon:"🎁",price:1000},
+ {id:"admin",name:"هدیهٔ اختصاصی مدیریت",
+  icon:"🏆",price:null}
+];
+
+const number = value => value.toLocaleString("fa-IR");
+const status = document.getElementById("status");
+
+function getCoins(){
+ const saved = localStorage.getItem("zino_coins");
+ const value = saved === null ? 100 : Number(saved);
+ return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+}
+
+function getBag(){
+ try{
+  const bag = JSON.parse(
+   localStorage.getItem("zino_gift_inventory") || "{}"
+  );
+  return bag && typeof bag === "object" && !Array.isArray(bag)
+   ? bag : {};
+ }catch{
+  return {};
+ }
+}
+
+function draw(){
+ const bag = getBag();
+ document.getElementById("coins").textContent = number(getCoins());
+ const grid = document.getElementById("gifts");
+ grid.replaceChildren();
+
+ gifts.forEach(gift => {
+  const card = document.createElement("article");
+  card.className = "card";
+
+  const art = document.createElement("span");
+  art.className = "art";
+  art.textContent = gift.icon;
+  art.setAttribute("aria-hidden","true");
+
+  const title = document.createElement("h2");
+  title.textContent = gift.name;
+
+  const price = document.createElement("p");
+  price.className = "price";
+  price.textContent = gift.price === null
+   ? "فقط توسط مدیریت اهدا می‌شود"
+   : number(gift.price) + " سکه";
+
+  const quantity = document.createElement("p");
+  quantity.className = "quantity";
+  quantity.textContent = "در کیف: " +
+   number(Number(bag[gift.id]) || 0);
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.disabled = gift.price === null;
+  button.textContent = gift.price === null
+   ? "🔒 ویژهٔ مدیریت" : "🔒 خرید گیفت";
+
+  button.addEventListener("click", () => buyGift(gift));
+  card.append(art,title,price,quantity,button);
+  grid.append(card);
+ });
+}
+
+function buyGift(gift){
+ const coins = getCoins();
+ if(coins < gift.price){
+  status.textContent = "سکه کافی نداری.";
+  return;
+ }
+ if(!confirm(
+  `خرید «${gift.name}» با ${number(gift.price)} سکه؟`
+ )) return;
+
+ const bag = getBag();
+ bag[gift.id] = (Number(bag[gift.id]) || 0) + 1;
+
+ try{
+  localStorage.setItem("zino_gift_inventory",JSON.stringify(bag));
+  localStorage.setItem("zino_coins",String(coins-gift.price));
+  draw();
+  status.textContent = "گیفت به کیف هدایا اضافه شد.";
+ }catch{
+  status.textContent = "ذخیره انجام نشد؛ حافظهٔ مرورگر را بررسی کن.";
+ }
+}
+
+window.addEventListener("pageshow",draw);
+window.addEventListener("storage",draw);
+draw();
+</script>
+</body>
+</html>

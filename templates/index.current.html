@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin-bottom:18px;
+}
+h1{
+ font-size:22px;
+ color:#c39bff;
+ margin:0;
+}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.icons{
+ display:flex;
+ gap:8px;
+ margin-inline-start:auto;
+}
+.icon{
+ width:42px;
+ height:42px;
+ border:1px solid #583077;
+ border-radius:14px;
+ background:#1b0d2e;
+ color:#eadcff;
+ font-size:16px;
+ cursor:pointer;
+}
+.quote{
+ text-align:center;
+ color:#d9c6ff;
+ font-size:14px;
+ margin:0 0 22px;
+ min-height:40px;
+ transition:opacity .4s;
+}
+.menu{
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+ margin-bottom:22px;
+}
+.main-btn,.secondary-btn,.reward-btn{
+ width:100%;
+ padding:14px;
+ border-radius:16px;
+ border:none;
+ font-size:15px;
+ font-weight:bold;
+ cursor:pointer;
+}
+.main-btn{background:#7b2ff7;color:#fff}
+.secondary-btn{background:#26103e;color:#eadcff;border:1px solid #583077}
+.reward-btn{background:#1b0d2e;color:#d9c6ff;border:1px solid #7b2ff7}
+.reward-btn:disabled{
+ background:#1b0d2e;
+ color:#a68abb;
+ border-color:#583077;
+ cursor:not-allowed;
+}
+.reward-status{
+ font-size:12px;
+ color:#a68abb;
+ text-align:center;
+ margin:8px 0 0;
+}
+.announcements{
+ padding:14px;
+ border-radius:18px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+}
+.announcements h2{
+ font-size:15px;
+ color:#c39bff;
+ margin:0 0 8px;
+}
+.announcements p{
+ font-size:12px;
+ color:#a68abb;
+ margin:0;
+ line-height:1.8;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/" aria-label="بازگشت">→</a>
+ <h1>ZINO ROMAN</h1>
+ <div class="icons">
+  <button class="icon" aria-label="جست‌وجو" onclick="location.href='/search'">🔍</button>
+  <button class="icon" aria-label="موزیک" onclick="window.open('/music','zinoMusic')">🎵</button>
+  <button class="icon" aria-label="اعلانات" onclick="location.href='/notifications'">🔔</button>
+ </div>
+</header>
+
+<main>
+ <p class="quote" id="quote">دنیای رمان‌ها را با سبکی شیک بخوان</p>
+
+ <div class="menu">
+  <button class="main-btn" type="button" onclick="location.href='/genres'">ژانرها</button>
+  <button class="secondary-btn" type="button" onclick="location.href='/store'">فروشگاه زینو</button>
+  <button class="reward-btn" type="button" id="dailyReward">دریافت ۵۰ سکهٔ روزانه</button>
+  <p class="reward-status" id="rewardStatus" role="status"></p>
+ </div>
+
+ <section class="announcements">
+  <h2>اعلانات</h2>
+  <div class="announcement-list">
+   <p>به ZINO ROMAN خوش آمدی! نسخهٔ اول برنامه آمادهٔ تست است.</p>
+  </div>
+ </section>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+(() => {
+  const button = document.getElementById("dailyReward");
+  const status = document.getElementById("rewardStatus");
+
+  if (!button) return;
+
+  const today = () => new Date().toDateString();
+  const coins = () => Number(localStorage.getItem("zinoCoins") || "0");
+  const receivedToday = () =>
+    localStorage.getItem("zinoLastReward") === today();
+
+  function update(){
+    const amount = coins();
+    const received = receivedToday();
+
+    button.disabled = received;
+    button.textContent = received
+      ? "امروز دریافت شد"
+      : "دریافت ۵۰ سکهٔ روزانه";
+
+    status.textContent = `موجودی: ${amount.toLocaleString("fa-IR")} سکه`;
+  }
+
+  button.addEventListener("click", () => {
+    if (receivedToday()) {
+      update();
+      return;
+    }
+
+    const amount = coins() + 50;
+    localStorage.setItem("zinoCoins", String(amount));
+    localStorage.setItem("zinoLastReward", today());
+
+    update();
+    status.textContent = `۵۰ سکه اضافه شد. موجودی: ${amount.toLocaleString("fa-IR")} سکه`;
+  });
+
+  update();
+})();
+
+const quotes = [
+  "دنیای رمان‌ها را با سبکی شیک بخوان",
+  "هر رمان، دنیایی تازه برای کشف کردن است",
+  "از میان کلمات، به قصه‌های بی‌پایان سفر کن",
+  "عشق، راز و ماجراجویی؛ همه در ZINO ROMAN",
+  "لحظه‌ات را به یک داستان خوب بسپار",
+  "رمان بعدی‌ات را همین‌جا پیدا کن"
+];
+
+let quoteIndex = 0;
+const quoteElement = document.getElementById("quote");
+
+function changeQuote(){
+  quoteElement.style.opacity = "0";
+
+  setTimeout(() => {
+    quoteIndex = (quoteIndex + 1) % quotes.length;
+    quoteElement.textContent = quotes[quoteIndex];
+    quoteElement.style.opacity = "1";
+  }, 400);
+}
+
+setInterval(changeQuote, 5000);
+</script>
+</body>
+</html>

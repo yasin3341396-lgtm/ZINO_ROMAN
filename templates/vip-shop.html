@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فروشگاه VIP | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
+  }
+
+  body {
+    min-height:100vh;
+    background:#0b0614;
+    color:#f2eaff;
+    display:flex;
+    flex-direction:column;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+  }
+
+  .top-bar {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+  }
+
+  .back-btn {
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(123,47,247,.55);
+    background:linear-gradient(145deg,#1b0d2e,#2b1049);
+    color:#c39bff;
+    font-size:22px;
+    cursor:pointer;
+  }
+
+  .page-title {
+    font-size:20px;
+    font-weight:bold;
+    color:#c39bff;
+  }
+
+  .section {
+    margin-bottom:22px;
+  }
+
+  .section-title {
+    font-size:17px;
+    color:#c39bff;
+    margin-bottom:12px;
+  }
+
+  .plans {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .plan {
+    padding:16px;
+    border-radius:18px;
+    border:1px solid rgba(123,47,247,.45);
+    background:rgba(123,47,247,.07);
+  }
+
+  .plan-title {
+    font-size:16px;
+    font-weight:bold;
+    color:#c39bff;
+    margin-bottom:6px;
+  }
+
+  .plan-desc {
+    font-size:12px;
+    color:#a993c9;
+    margin-bottom:12px;
+  }
+
+  .buy-btn {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:14px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(90deg,#7b2ff7,#a55bff);
+  }
+
+  .buy-btn.owned {
+    background:linear-gradient(90deg,#00c853,#00e676);
+    color:#04240f;
+  }
+
+  .buy-btn.not-owned {
+    background:linear-gradient(90deg,#d50000,#ff1744);
+  }
+
+  .offer {
+    padding:14px;
+    border-radius:16px;
+    border:1px solid rgba(245,179,1,.45);
+    background:rgba(245,179,1,.08);
+    margin-bottom:10px;
+  }
+
+  .offer-title {
+    font-size:15px;
+    font-weight:bold;
+    color:#ffd76a;
+    margin-bottom:4px;
+  }
+
+  .offer-desc {
+    font-size:12px;
+    color:#d9c6ff;
+  }
+
+  .footer {
+    margin-top:auto;
+    padding-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#8f7bb0;
+    line-height:1.6;
+  }
+
+  .footer strong {
+    color:#c39bff;
+  }
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <button class="back-btn" onclick="location.href='/store'">‹</button>
+    <h1 class="page-title">فروشگاه VIP</h1>
+  </header>
+
+  <main>
+
+    <section class="section">
+      <h2 class="section-title">بسته‌های اشتراک</h2>
+
+      <div class="plans">
+        <div class="plan">
+          <div class="plan-title">اقتصادی | SILVER</div>
+          <div class="plan-desc">حذف تبلیغات، ۱۰۰ سکه روزانه، رمان‌های ویژه، دانلود آفلاین و نشان نقره‌ای</div>
+          <button class="buy-btn not-owned" id="silverBtn">خرید اشتراک</button>
+        </div>
+
+        <div class="plan">
+          <div class="plan-title">حرفه‌ای | GOLD</div>
+          <div class="plan-desc">همهٔ امکانات اقتصادی، ۳۰۰ سکه روزانه، دسترسی زودتر، رمان‌های GOLD و تخفیف ۴۰٪</div>
+          <button class="buy-btn not-owned" id="goldBtn">خرید اشتراک</button>
+        </div>
+
+        <div class="plan">
+          <div class="plan-title">دیاموند | DIAMOND</div>
+          <div class="plan-desc">همهٔ امکانات GOLD، ۵۰۰ سکه روزانه، رمان‌های DIAMOND، تخفیف ۷۰٪ و نشان الماس متحرک</div>
+          <button class="buy-btn not-owned" id="diamondBtn">خرید اشتراک</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">ارتقای اشتراک</h2>
+
+      <div class="plans">
+        <div class="plan">
+          <div class="plan-title">ارتقا به GOLD</div>
+          <div class="plan-desc">از SILVER به GOLD ارتقا بده</div>
+          <button class="buy-btn" onclick="location.href='/premium'">ارتقا</button>
+        </div>
+
+        <div class="plan">
+          <div class="plan-title">ارتقا به DIAMOND</div>
+          <div class="plan-desc">از GOLD به DIAMOND ارتقا بده</div>
+          <button class="buy-btn" onclick="location.href='/premium'">ارتقا</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">پیشنهادهای ویژه</h2>
+
+      <div class="offer">
+        <div class="offer-title">پیشنهاد ویژهٔ هفته</div>
+        <div class="offer-desc">تخفیف ویژه روی بستهٔ ۱۵۰۰ سکه</div>
+      </div>
+
+      <div class="offer">
+        <div class="offer-title">پیشنهاد ماهانه</div>
+        <div class="offer-desc">سکهٔ بیشتر با قیمت کمتر</div>
+      </div>
+
+      <div class="offer">
+        <div class="offer-title">پیشنهاد رویداد</div>
+        <div class="offer-desc">جوایز ویژه در رویدادهای ZINO ROMAN</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <strong>ZINO ROMAN</strong><br>
+    تاریخ ساخت: 2026/11/09
+  </footer>
+
+<script>
+  function checkPlan(plan) {
+    const button = document.getElementById(plan + "Btn");
+    const owned = localStorage.getItem("zino_plan_" + plan) === "true";
+
+    if (owned) {
+      button.textContent = "فعال است";
+      button.classList.remove("not-owned");
+      button.classList.add("owned");
+    }
+  }
+
+  checkPlan("silver");
+  checkPlan("gold");
+  checkPlan("diamond");
+</script>
+
+</body>
+</html>

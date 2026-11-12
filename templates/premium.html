@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>پرمیوم و سکه | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
+  }
+
+  body {
+    min-height:100vh;
+    background:#0b0614;
+    color:#f2eaff;
+    display:flex;
+    flex-direction:column;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+  }
+
+  .top-bar {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+  }
+
+  .back-btn {
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(123,47,247,.55);
+    background:linear-gradient(145deg,#1b0d2e,#2b1049);
+    color:#c39bff;
+    font-size:22px;
+    cursor:pointer;
+  }
+
+  .page-title {
+    font-size:20px;
+    font-weight:bold;
+    color:#c39bff;
+  }
+
+  .coins {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    border-radius:999px;
+    border:1px solid rgba(245,179,1,.45);
+    background:rgba(245,179,1,.10);
+    margin-bottom:20px;
+  }
+
+  .coin-icon {
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#ffe58a,#f5b301 55%,#b87900);
+    box-shadow:0 3px 8px rgba(0,0,0,.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:bold;
+    color:#5b3a00;
+  }
+
+  .coin-count {
+    font-weight:bold;
+    color:#ffd76a;
+  }
+
+  .plans {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .plan {
+    padding:16px;
+    border-radius:18px;
+    border:1px solid rgba(123,47,247,.45);
+    background:rgba(123,47,247,.07);
+  }
+
+  .plan-title {
+    font-size:17px;
+    font-weight:bold;
+    color:#c39bff;
+    margin-bottom:6px;
+  }
+
+  .plan-desc {
+    font-size:12px;
+    color:#a993c9;
+    margin-bottom:12px;
+  }
+
+  .buy-btn {
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:bold;
+    color:#fff;
+    cursor:pointer;
+    background:linear-gradient(90deg,#7b2ff7,#a55bff);
+    box-shadow:0 8px 20px rgba(123,47,247,.35);
+  }
+
+  .buy-btn.owned {
+    background:linear-gradient(90deg,#00c853,#00e676);
+    color:#04240f;
+  }
+
+  .buy-btn.not-owned {
+    background:linear-gradient(90deg,#d50000,#ff1744);
+    color:#fff;
+  }
+
+  .section-title {
+    margin:22px 0 12px;
+    font-size:17px;
+    color:#c39bff;
+  }
+
+  .packages {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .package {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px;
+    border-radius:16px;
+    border:1px solid rgba(123,47,247,.35);
+    background:rgba(123,47,247,.07);
+  }
+
+  .old-price {
+    color:#8f7bb0;
+    text-decoration:line-through;
+    font-size:12px;
+  }
+
+  .new-price {
+    color:#ffd76a;
+    font-weight:bold;
+  }
+
+  .footer {
+    margin-top:auto;
+    padding-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#8f7bb0;
+    line-height:1.6;
+  }
+
+  .footer strong {
+    color:#c39bff;
+  }
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <button class="back-btn" onclick="location.href='/'">‹</button>
+    <h1 class="page-title">پرمیوم و سکه</h1>
+  </header>
+
+  <div class="coins">
+    <span class="coin-icon">Z</span>
+    <span class="coin-count" id="coinCount">100</span>
+    <span>سکه</span>
+  </div>
+
+  <main>
+    <div class="plans">
+
+      <div class="plan">
+        <div class="plan-title">اقتصادی | SILVER</div>
+        <div class="plan-desc">
+          حذف تبلیغات، دریافت روزانه ۱۰۰ سکه، رمان‌های ویژه، دانلود آفلاین، نشان نقره‌ای VIP و فونت اختصاصی
+        </div>
+        <button class="buy-btn not-owned" id="silverBtn">خرید اشتراک</button>
+      </div>
+
+      <div class="plan">
+        <div class="plan-title">حرفه‌ای | GOLD</div>
+        <div class="plan-desc">
+          همهٔ امکانات اقتصادی، ۳۰۰ سکه روزانه، دسترسی زودتر، رمان‌های GOLD، موسیقی ویژه، نشان طلایی، تخفیف ۴۰٪ و مطالعهٔ رایگان برخی رمان‌ها
+        </div>
+        <button class="buy-btn not-owned" id="goldBtn">خرید اشتراک</button>
+      </div>
+
+      <div class="plan">
+        <div class="plan-title">دیاموند | DIAMOND</div>
+        <div class="plan-desc">
+          همهٔ امکانات GOLD، ۵۰۰ سکه روزانه، رمان‌های DIAMOND، انتشار زودهنگام، تخفیف ۷۰٪، نشان الماس متحرک، قاب اختصاصی، پشتیبانی اولویت‌دار، رویدادها و هدیهٔ ماهانه
+        </div>
+        <button class="buy-btn not-owned" id="diamondBtn">خرید اشتراک</button>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">قیمت‌های داخل برنامه</h2>
+
+    <div class="packages">
+      <div class="package">
+        <span>باز کردن یک فصل</span>
+        <span>۲۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>باز کردن ۵ فصل</span>
+        <span>۹۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>باز کردن ۱۰ فصل</span>
+        <span>۱۷۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>خرید قاب پروفایل</span>
+        <span>۱۰۰ تا ۵۰۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>خرید تم اختصاصی</span>
+        <span>۱۵۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>ارسال هدیه به نویسنده</span>
+        <span>۲۰ تا ۱۰۰۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>خرید نشان ویژه</span>
+        <span>۳۰۰ سکه</span>
+      </div>
+
+      <div class="package">
+        <span>اضافه‌کردن دوست</span>
+        <span>۱۰۰ سکه</span>
+      </div>
+    </div>
+
+    <h2 class="section-title">سطح کاربر</h2>
+
+    <div class="packages">
+      <div class="package">
+        <span>سطح ۱ تا ۱۰</span>
+        <span>جوایز و ظاهر متفاوت در هر سطح</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <strong>ZINO ROMAN</strong><br>
+    تاریخ ساخت: 2026/11/09
+  </footer>
+
+<script>
+  let coins = parseInt(localStorage.getItem("zino_coins") || "100");
+  const coinCount = document.getElementById("coinCount");
+
+  function updateCoins() {
+    coinCount.textContent = coins;
+  }
+
+  function checkPlan(plan) {
+    const button = document.getElementById(plan + "Btn");
+    const owned = localStorage.getItem("zino_plan_" + plan) === "true";
+
+    if (owned) {
+      button.textContent = "فعال است";
+      button.classList.remove("not-owned");
+      button.classList.add("owned");
+    }
+  }
+
+  function buyPlan(plan) {
+    localStorage.setItem("zino_plan_" + plan, "true");
+    checkPlan(plan);
+  }
+
+  document.getElementById("silverBtn").addEventListener("click", () => buyPlan("silver"));
+  document.getElementById("goldBtn").addEventListener("click", () => buyPlan("gold"));
+  document.getElementById("diamondBtn").addEventListener("click", () => buyPlan("diamond"));
+
+  updateCoins();
+  checkPlan("silver");
+  checkPlan("gold");
+  checkPlan("diamond");
+</script>
+
+</body>
+</html>

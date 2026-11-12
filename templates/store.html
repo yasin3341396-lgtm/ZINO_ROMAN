@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>فروشگاه زینو | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:12px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.coins{
+ margin-inline-start:auto;
+ padding:10px 14px;
+ border-radius:14px;
+ background:#1b0d2e;
+ border:1px solid #7b2ff7;
+ color:#d9c6ff;
+ font-size:13px;
+ font-weight:bold;
+}
+/* استایل کد هدیه */
+.gift-box{
+ background:#1b0d2e;
+ border:1px solid #583077;
+ border-radius:18px;
+ padding:16px;
+ margin-bottom:16px;
+}
+.gift-box h2{
+ font-size:14px;
+ color:#c39bff;
+ margin:0 0 10px;
+ text-align:center;
+}
+.gift-input{
+ display:flex;
+ gap:8px;
+}
+.gift-input input{
+ flex:1;
+ padding:10px;
+ border-radius:10px;
+ border:1px solid #583077;
+ background:#0b0614;
+ color:#f2eaff;
+ text-align:center;
+ font-family:inherit;
+}
+.gift-input button{
+ padding:10px 16px;
+ border-radius:10px;
+ border:none;
+ background:#7b2ff7;
+ color:#fff;
+ font-weight:bold;
+ cursor:pointer;
+}
+.msg{
+ font-size:12px;
+ text-align:center;
+ margin-top:8px;
+ height:16px;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+.item{
+ padding:14px;
+ border-radius:18px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ text-align:center;
+}
+.item h2{
+ font-size:14px;
+ color:#d9c6ff;
+ margin:0 0 6px;
+}
+.item p{
+ font-size:12px;
+ color:#a68abb;
+ margin:0 0 10px;
+ line-height:1.8;
+}
+.buy{
+ width:100%;
+ padding:10px;
+ border-radius:12px;
+ border:none;
+ background:#7b2ff7;
+ color:#fff;
+ font-weight:bold;
+ cursor:pointer;
+}
+.buy:disabled{
+ background:#4b2a6b;
+ color:#a68abb;
+ cursor:not-allowed;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/" aria-label="بازگشت">→</a>
+ <h1>فروشگاه زینو</h1>
+ <div class="coins" id="coins">🪙 0</div>
+</header>
+
+<main>
+ <!-- بخش کد هدیه اضافه شده -->
+ <div class="gift-box">
+  <h2>🎁 کد هدیه یا تخفیف</h2>
+  <div class="gift-input">
+   <input type="text" id="codeInput" placeholder="کد را وارد کنید">
+   <button id="applyBtn">اعمال</button>
+  </div>
+  <div class="msg" id="msg"></div>
+ </div>
+
+ <div class="grid" id="items"></div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const items = [
+ {name:"🥇 نسخه طلایی", price:500, desc:"دسترسی به بخش صوتی + امکانات ویژه", special:"gold"},
+ {name:"💎 نسخه الماسی", price:1000, desc:"همه امکانات + پشتیبانی ویژه", special:"diamond"},
+ {name:"جلد طلایی", price:100, desc:"جلد ویژه برای رمان‌ها"},
+ {name:"تمِ شب", price:150, desc:"تم تیره‌تر و شیک‌تر"},
+ {name:"حالت خواندن", price:200, desc:"حالت راحت‌تر برای مطالعه"},
+ {name:"آواتار ویژه", price:250, desc:"آواتار مخصوص پروفایل"}
+];
+
+const coinsEl = document.getElementById("coins");
+const itemsEl = document.getElementById("items");
+
+let coins = Number(localStorage.getItem("zinoCoins") || 0);
+
+function saveCoins(){
+ localStorage.setItem("zinoCoins", coins);
+ coinsEl.textContent = `🪙 ${coins}`;
+}
+
+function renderItems(){
+ itemsEl.replaceChildren();
+
+ items.forEach((item, index) => {
+  const box = document.createElement("div");
+  box.className = "item";
+
+  const title = document.createElement("h2");
+  title.textContent = item.name;
+
+  const desc = document.createElement("p");
+  desc.textContent = item.desc;
+
+  const button = document.createElement("button");
+  button.className = "buy";
+  button.textContent = `خرید ${item.price} سکه`;
+  button.disabled = coins < item.price;
+
+  button.addEventListener("click", () => {
+   if(coins < item.price) return;
+   coins -= item.price;
+   saveCoins();
+   
+   // اگه آیتم ویژه بود، نسخه رو فعال کن
+   if(item.special === "gold") {
+    localStorage.setItem("zino_premium_gold", "true");
+    alert("🎉 نسخه طلایی فعال شد!\nحالا به بخش صوتی دسترسی دارید.");
+   } else if(item.special === "diamond") {
+    localStorage.setItem("zino_premium_diamond", "true");
+    alert("🎉 نسخه الماسی فعال شد!\nحالا به همه امکانات دسترسی دارید.");
+   }
+   
+   renderItems();
+  });
+
+  box.append(title, desc, button);
+  itemsEl.append(box);
+ });
+}
+
+// ===== سیستم کد هدیه (با قفل یکبار مصرف) =====
+const codeInput = document.getElementById("codeInput");
+const applyBtn = document.getElementById("applyBtn");
+const msgEl = document.getElementById("msg");
+
+applyBtn.addEventListener("click", () => {
+ const code = codeInput.value.trim().toUpperCase();
+ if(!code) return;
+
+ // گرفتن لیست کدهای استفاده شده از حافظه
+ let usedCodes = JSON.parse(localStorage.getItem("zinoUsedCodes") || "[]");
+
+ // ۱. بررسی تکراری بودن
+ if(usedCodes.includes(code)){
+  msgEl.style.color = "#ff5252";
+  msgEl.textContent = "❌ این کد قبلاً استفاده شده است!";
+  return;
+ }
+
+ // ۲. بررسی و اعمال کد
+ if(code === "ZINO100"){
+  coins += 100;
+  saveCoins();
+  renderItems();
+  msgEl.style.color = "#00e676";
+  msgEl.textContent = "🎉 ۱۰۰ سکه به شما اضافه شد!";
+  usedCodes.push(code); // ثبت کد
+  localStorage.setItem("zinoUsedCodes", JSON.stringify(usedCodes));
+  codeInput.value = "";
+ } 
+ else if(code === "WELCOME50"){
+  coins += 50;
+  saveCoins();
+  renderItems();
+  msgEl.style.color = "#00e676";
+  msgEl.textContent = "🎉 ۵۰ سکه به شما اضافه شد!";
+  usedCodes.push(code); // ثبت کد
+  localStorage.setItem("zinoUsedCodes", JSON.stringify(usedCodes));
+  codeInput.value = "";
+ } 
+ else if(code === "OFF20"){
+  msgEl.style.color = "#00e676";
+  msgEl.textContent = "🎉 کد تخفیف ۲۰٪ فعال شد (فاز بعدی)";
+  // تخفیف هم می‌تونه یکبار مصرف باشه، فعلاً ثبتش می‌کنیم
+  usedCodes.push(code); 
+  localStorage.setItem("zinoUsedCodes", JSON.stringify(usedCodes));
+  codeInput.value = "";
+ } 
+ else {
+  msgEl.style.color = "#ff5252";
+  msgEl.textContent = "کد نامعتبر است";
+ }
+});
+
+saveCoins();
+renderItems();
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>انتخاب حالت | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin-bottom:24px;
+}
+h1{font-size:20px;color:#c39bff;margin:0}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.genre-title{
+ font-size:24px;
+ font-weight:bold;
+ color:#c39bff;
+ text-align:center;
+ margin:30px 0 40px;
+}
+.choices{
+ display:flex;
+ flex-direction:column;
+ gap:16px;
+ padding:0 20px;
+}
+.choice{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:12px;
+ padding:28px;
+ border-radius:20px;
+ border:2px solid #583077;
+ background:linear-gradient(135deg,#1b0d2e,#26103e);
+ color:#f2eaff;
+ font-size:20px;
+ font-weight:bold;
+ text-decoration:none;
+ transition:all 0.3s;
+ cursor:pointer;
+}
+.choice:hover, .choice:active{
+ border-color:#7b2ff7;
+ background:linear-gradient(135deg,#26103e,#3a1760);
+ transform:scale(1.02);
+}
+.choice .icon{
+ font-size:32px;
+}
+
+/* دکمه صوتی قفل */
+.choice.locked {
+ opacity: 0.6;
+ cursor: not-allowed;
+}
+.choice.locked .lock-badge {
+ display: inline-block;
+ font-size: 12px;
+ background: #ff5252;
+ color: white;
+ padding: 4px 10px;
+ border-radius: 8px;
+ margin-right: 8px;
+ font-weight: normal;
+}
+
+/* مودال نسخه طلایی/الماسی */
+.modal-overlay {
+ display: none;
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0,0,0,0.8);
+ z-index: 9999;
+ align-items: center;
+ justify-content: center;
+ padding: 20px;
+}
+.modal-overlay.active {
+ display: flex;
+}
+.modal-box {
+ background: linear-gradient(135deg, #1b0d2e, #2b1049);
+ border: 2px solid #c39bff;
+ border-radius: 24px;
+ padding: 30px 24px;
+ max-width: 400px;
+ width: 100%;
+ text-align: center;
+ animation: popIn 0.3s ease;
+}
+@keyframes popIn {
+ from { transform: scale(0.8); opacity: 0; }
+ to { transform: scale(1); opacity: 1; }
+}
+.modal-box .icon {
+ font-size: 60px;
+ margin-bottom: 16px;
+}
+.modal-box h2 {
+ color: #c39bff;
+ font-size: 20px;
+ margin: 0 0 12px;
+}
+.modal-box p {
+ color: #a68abb;
+ font-size: 14px;
+ line-height: 1.8;
+ margin: 0 0 24px;
+}
+.modal-box .buttons {
+ display: flex;
+ gap: 10px;
+}
+.modal-box button {
+ flex: 1;
+ padding: 14px;
+ border-radius: 14px;
+ border: none;
+ font-family: inherit;
+ font-size: 14px;
+ font-weight: bold;
+ cursor: pointer;
+}
+.btn-gold {
+ background: linear-gradient(135deg, #ffd700, #ffaa00);
+ color: #3a2a00;
+}
+.btn-diamond {
+ background: linear-gradient(135deg, #00e5ff, #7b2ff7);
+ color: white;
+}
+.btn-cancel {
+ background: #26103e;
+ color: #a68abb;
+ border: 1px solid #583077 !important;
+ flex: 0 0 auto !important;
+ padding: 14px 20px !important;
+}
+
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" id="backLink" href="/genres">→</a>
+ <h1>انتخاب حالت</h1>
+</header>
+
+<main>
+ <p class="genre-title" id="genreTitle">—</p>
+
+ <div class="choices">
+  <a class="choice" id="textBtn" href="#">
+   <span class="icon">📖</span>
+   <span>متنی</span>
+  </a>
+  <a class="choice locked" id="audioBtn" href="#">
+   <span class="icon">🎧</span>
+   <span>صوتی</span>
+   <span class="lock-badge">به‌زودی</span>
+  </a>
+ </div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<!-- مودال نسخه طلایی/الماسی -->
+<div class="modal-overlay" id="premiumModal">
+ <div class="modal-box">
+  <div class="icon">🔒</div>
+  <h2>بخش صوتی قفل است</h2>
+  <p>برای دسترسی به نسخه صوتی رمان‌ها،<br>باید نسخه <b>طلایی</b> یا <b>الماسی</b> را خریداری کنید.</p>
+  <div class="buttons">
+   <button class="btn-gold" onclick="buyPremium('gold')">🥇 طلایی</button>
+   <button class="btn-diamond" onclick="buyPremium('diamond')">💎 الماسی</button>
+  </div>
+  <div style="margin-top: 10px;">
+   <button class="btn-cancel" onclick="closeModal()" style="width: 100%;">انصراف</button>
+  </div>
+ </div>
+</div>
+
+<script>
+const genreNames = {
+ love:"عشق و عاشقی",
+ horror:"ترس و دلهره",
+ sad:"اشک و غمگین",
+ comedy:"کمدی و طنز",
+ thriller:"هیجان و پلیسی",
+ mystery:"ماجراجویی و معمایی"
+};
+
+const params = new URLSearchParams(location.search);
+const genre = params.get("genre") || "love";
+
+document.getElementById("genreTitle").textContent = genreNames[genre] || "—";
+document.getElementById("textBtn").href = `/novels?genre=${genre}`;
+
+const audioBtn = document.getElementById("audioBtn");
+const premiumModal = document.getElementById("premiumModal");
+
+// بررسی وضعیت نسخه کاربر
+function checkPremiumStatus() {
+ const isGold = localStorage.getItem("zino_premium_gold") === "true";
+ const isDiamond = localStorage.getItem("zino_premium_diamond") === "true";
+ return isGold || isDiamond;
+}
+
+// کلیک روی دکمه صوتی
+audioBtn.addEventListener("click", (e) => {
+ e.preventDefault();
+ 
+ if(checkPremiumStatus()) {
+  // کاربر نسخه طلایی یا الماسی داره
+  location.href = `/audiobooks?genre=${genre}`;
+ } else {
+  // کاربر نسخه نداره، مودال باز کن
+  premiumModal.classList.add("active");
+ }
+});
+
+function closeModal() {
+ premiumModal.classList.remove("active");
+}
+
+function buyPremium(type) {
+ if(type === 'gold') {
+  localStorage.setItem("zino_premium_gold", "true");
+  alert("🎉 نسخه طلایی فعال شد!\nحالا می‌توانید از بخش صوتی استفاده کنید.");
+ } else {
+  localStorage.setItem("zino_premium_diamond", "true");
+  alert("🎉 نسخه الماسی فعال شد!\nحالا می‌توانید از بخش صوتی استفاده کنید.");
+ }
+ closeModal();
+ location.href = `/audiobooks?genre=${genre}`;
+}
+
+// بستن مودال با کلیک بیرون
+premiumModal.addEventListener("click", (e) => {
+ if(e.target === premiumModal) closeModal();
+});
+</script>
+</body>
+</html>

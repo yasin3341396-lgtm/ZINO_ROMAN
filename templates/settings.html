@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تنظیمات برنامه | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:var(--app-font, Tahoma), Arial, sans-serif;
+  }
+
+  :root {
+    --app-font: Tahoma;
+    --app-font-size: 16px;
+    --app-line-height: 1.6;
+    --app-font-weight: normal;
+    --app-text-color: #f2eaff;
+    --app-bg-color: #0b0614;
+    --app-text-align: right;
+    --app-brightness: 1;
+  }
+
+  body {
+    min-height:100vh;
+    background:var(--app-bg-color);
+    color:var(--app-text-color);
+    font-size:var(--app-font-size);
+    line-height:var(--app-line-height);
+    font-weight:var(--app-font-weight);
+    text-align:var(--app-text-align);
+    filter:brightness(var(--app-brightness));
+    display:flex;
+    flex-direction:column;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+  }
+
+  .top-bar {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+  }
+
+  .back-btn {
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(123,47,247,.55);
+    background:linear-gradient(145deg,#1b0d2e,#2b1049);
+    color:#c39bff;
+    font-size:22px;
+    cursor:pointer;
+  }
+
+  .page-title {
+    font-size:20px;
+    font-weight:bold;
+    color:#c39bff;
+  }
+
+  .menu {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .item {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px;
+    border-radius:16px;
+    border:1px solid rgba(123,47,247,.35);
+    background:rgba(123,47,247,.07);
+  }
+
+  .item.locked {
+    opacity:.55;
+  }
+
+  .item-title {
+    font-size:15px;
+    font-weight:bold;
+  }
+
+  .item-desc {
+    font-size:11px;
+    color:#a993c9;
+    margin-top:3px;
+  }
+
+  .lock {
+    font-size:11px;
+    color:#ffd76a;
+    border:1px solid rgba(245,179,1,.5);
+    padding:4px 8px;
+    border-radius:999px;
+  }
+
+  input[type="range"] {
+    width:130px;
+    accent-color:#a55bff;
+  }
+
+  select {
+    padding:8px 10px;
+    border-radius:10px;
+    background:#1b0d2e;
+    color:#d9c6ff;
+    border:1px solid rgba(123,47,247,.45);
+  }
+
+  .colors {
+    display:flex;
+    gap:8px;
+  }
+
+  .color {
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    border:2px solid transparent;
+    cursor:pointer;
+  }
+
+  .color.active {
+    border-color:#fff;
+  }
+
+  .color.locked {
+    opacity:.45;
+    cursor:not-allowed;
+  }
+
+  .footer {
+    margin-top:auto;
+    padding-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#8f7bb0;
+    line-height:1.6;
+  }
+
+  .footer strong {
+    color:#c39bff;
+  }
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <button class="back-btn" onclick="location.href='/'">‹</button>
+    <h1 class="page-title">تنظیمات برنامه</h1>
+  </header>
+
+  <main class="menu">
+
+    <div class="item">
+      <div>
+        <div class="item-title">فونت‌ها</div>
+        <div class="item-desc">انتخاب فونت برنامه</div>
+      </div>
+      <select id="fontFamily">
+        <option value="Tahoma">فونت اصلی</option>
+        <option value="Vazirmatn" disabled>وزیرمتن 🔒</option>
+        <option value="IRANSans" disabled>ایران‌سنس 🔒</option>
+        <option value="Lalezar" disabled>لاله‌زار 🔒</option>
+      </select>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">اندازهٔ فونت</div>
+        <div class="item-desc">کوچک تا بزرگ</div>
+      </div>
+      <input type="range" id="fontSize" min="12" max="28" value="16">
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">فاصلهٔ بین خطوط</div>
+        <div class="item-desc">کم تا زیاد</div>
+      </div>
+      <input type="range" id="lineHeight" min="1" max="2.5" step="0.1" value="1.6">
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">ضخامت فونت</div>
+        <div class="item-desc">نازک، معمولی، ضخیم</div>
+      </div>
+      <select id="fontWeight">
+        <option value="lighter" disabled>نازک 🔒</option>
+        <option value="normal" selected>معمولی</option>
+        <option value="bold" disabled>ضخیم 🔒</option>
+      </select>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">حاشیهٔ متن</div>
+        <div class="item-desc">فاصله از لبه‌های صفحه</div>
+      </div>
+      <input type="range" id="padding" min="0" max="30" value="14">
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">تراز متن</div>
+        <div class="item-desc">راست‌چین، وسط، دوطرفه</div>
+      </div>
+      <select id="textAlign">
+        <option value="right" selected>راست‌چین</option>
+        <option value="center">وسط</option>
+        <option value="justify">دوطرفه</option>
+      </select>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">رنگ متن</div>
+        <div class="item-desc">رنگ نوشته‌ها</div>
+      </div>
+      <div class="colors">
+        <button class="color active" data-color="#f2eaff" style="background:#f2eaff"></button>
+        <button class="color locked" data-color="#000000" style="background:#000"></button>
+        <button class="color locked" data-color="#ff6b81" style="background:#ff6b81"></button>
+        <button class="color locked" data-color="#7b2ff7" style="background:#7b2ff7"></button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">رنگ پس‌زمینه</div>
+        <div class="item-desc">رنگ صفحه</div>
+      </div>
+      <div class="colors">
+        <button class="color active" data-bg="#0b0614" style="background:#0b0614"></button>
+        <button class="color locked" data-bg="#ffffff" style="background:#fff"></button>
+        <button class="color locked" data-bg="#1a1a1a" style="background:#1a1a1a"></button>
+        <button class="color locked" data-bg="#2b1049" style="background:#2b1049"></button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">حالت مطالعه</div>
+        <div class="item-desc">روز، شب یا خودکار</div>
+      </div>
+      <select id="readingMode">
+        <option value="auto" selected>خودکار</option>
+        <option value="day">روز</option>
+        <option value="night">شب</option>
+      </select>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">چرخش صفحه</div>
+        <div class="item-desc">عمودی یا افقی</div>
+      </div>
+      <select id="orientation">
+        <option value="portrait" selected>عمودی</option>
+        <option value="landscape">افقی</option>
+      </select>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="item-title">روشنایی</div>
+        <div class="item-desc">کم تا زیاد</div>
+      </div>
+      <input type="range" id="brightness" min="40" max="120" value="100">
+    </div>
+
+    <div class="item locked">
+      <div>
+        <div class="item-title">تم‌ها</div>
+        <div class="item-desc">تم اصلی فعال است</div>
+      </div>
+      <span class="lock">قفل</span>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <strong>ZINO ROMAN</strong><br>
+    تاریخ ساخت: 2026/11/09
+  </footer>
+
+<script>
+  function save(key, value) {
+    localStorage.setItem(key, value);
+  }
+
+  function load(key, fallback) {
+    return localStorage.getItem(key) || fallback;
+  }
+
+  const root = document.documentElement;
+
+  const fontFamily = document.getElementById("fontFamily");
+  const fontSize = document.getElementById("fontSize");
+  const lineHeight = document.getElementById("lineHeight");
+  const fontWeight = document.getElementById("fontWeight");
+  const padding = document.getElementById("padding");
+  const textAlign = document.getElementById("textAlign");
+  const readingMode = document.getElementById("readingMode");
+  const orientation = document.getElementById("orientation");
+  const brightness = document.getElementById("brightness");
+
+  function applySettings() {
+    root.style.setProperty("--app-font", load("zino_font", "Tahoma"));
+    root.style.setProperty("--app-font-size", load("zino_font_size", "16") + "px");
+    root.style.setProperty("--app-line-height", load("zino_line_height", "1.6"));
+    root.style.setProperty("--app-font-weight", load("zino_font_weight", "normal"));
+    root.style.setProperty("--app-text-align", load("zino_text_align", "right"));
+    root.style.setProperty("--app-text-color", load("zino_text_color", "#f2eaff"));
+    root.style.setProperty("--app-bg-color", load("zino_bg_color", "#0b0614"));
+    root.style.setProperty("--app-brightness", (load("zino_brightness", "100") / 100));
+
+    const pad = load("zino_padding", "14");
+    document.body.style.padding = `
+      max(${pad}px, env(safe-area-inset-top))
+      max(${pad}px, env(safe-area-inset-right))
+      max(${pad}px, env(safe-area-inset-bottom))
+      max(${pad}px, env(safe-area-inset-left))
+    `;
+  }
+
+  fontFamily.addEventListener("change", () => {
+    if (fontFamily.selectedOptions[0].disabled) return;
+    save("zino_font", fontFamily.value);
+    applySettings();
+  });
+
+  fontSize.addEventListener("input", () => {
+    save("zino_font_size", fontSize.value);
+    applySettings();
+  });
+
+  lineHeight.addEventListener("input", () => {
+    save("zino_line_height", lineHeight.value);
+    applySettings();
+  });
+
+  fontWeight.addEventListener("change", () => {
+    if (fontWeight.selectedOptions[0].disabled) return;
+    save("zino_font_weight", fontWeight.value);
+    applySettings();
+  });
+
+  padding.addEventListener("input", () => {
+    save("zino_padding", padding.value);
+    applySettings();
+  });
+
+  textAlign.addEventListener("change", () => {
+    save("zino_text_align", textAlign.value);
+    applySettings();
+  });
+
+  readingMode.addEventListener("change", () => {
+    save("zino_reading_mode", readingMode.value);
+  });
+
+  orientation.addEventListener("change", () => {
+    save("zino_orientation", orientation.value);
+  });
+
+  brightness.addEventListener("input", () => {
+    save("zino_brightness", brightness.value);
+    applySettings();
+  });
+
+  document.querySelectorAll(".color").forEach(button => {
+    button.addEventListener("click", () => {
+      if (button.classList.contains("locked")) return;
+
+      const isText = button.dataset.color;
+      const isBackground = button.dataset.bg;
+
+      if (isText) {
+        save("zino_text_color", isText);
+      }
+
+      if (isBackground) {
+        save("zino_bg_color", isBackground);
+      }
+
+      applySettings();
+    });
+  });
+
+  applySettings();
+</script>
+
+</body>
+</html>

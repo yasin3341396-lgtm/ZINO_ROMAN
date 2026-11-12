@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>اعلان‌ها | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:12px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.list{
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+}
+.item{
+ padding:16px;
+ border-radius:16px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+}
+.item h2{
+ font-size:14px;
+ color:#d9c6ff;
+ margin:0 0 8px;
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+.item p{
+ font-size:13px;
+ color:#a68abb;
+ margin:0;
+ line-height:1.8;
+}
+/* استایل ویژه اعلان هدیه */
+.gift-item {
+ border: 2px solid #c39bff;
+ background: linear-gradient(135deg, #1b0d2e, #26103e);
+ box-shadow: 0 0 15px rgba(195, 155, 255, 0.2);
+}
+.gift-item h2 { color: #ffd700; }
+.gift-btn {
+ display: inline-block;
+ margin-top: 12px;
+ padding: 8px 16px;
+ background: #7b2ff7;
+ color: white;
+ border-radius: 10px;
+ text-decoration: none;
+ font-size: 13px;
+ font-weight: bold;
+}
+.empty{
+ text-align:center;
+ color:#a68abb;
+ padding:40px 20px;
+ font-size:14px;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/home" aria-label="بازگشت">→</a>
+ <h1>اعلان‌ها</h1>
+</header>
+
+<main>
+ <div class="list" id="notifList">
+  <!-- اعلان‌ها اینجا قرار می‌گیرند -->
+ </div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const notifList = document.getElementById("notifList");
+
+// بررسی اینکه آیا کاربر قبلاً وارد شده یا نه
+const isFirstTime = !localStorage.getItem("zino_welcomed");
+
+if (isFirstTime) {
+    // ۱. نمایش پیام خوش‌آمدگویی و هدیه
+    notifList.innerHTML = `
+        <div class="item gift-item">
+            <h2>🎉 خوش آمدید!</h2>
+            <p>به دنیای <b>ZINO ROMAN</b> خوش آمدید. از طرف مدیریت زینو، یک هدیه ویژه برای شروع سفر شما در نظر گرفته‌ایم:</p>
+            <p style="margin-top:8px; font-size:16px; color:#00e676; font-weight:bold;">🎁 هدیه: ۱۰۰ سکه رایگان</p>
+            <a href="/store" class="gift-btn">دریافت هدیه (رفتن به فروشگاه)</a>
+            <p style="margin-top:10px; font-size:11px; color:#a68abb;">* این هدیه فقط برای بار اول اعطا می‌شود.</p>
+        </div>
+        <div class="item">
+            <h2>📚 کتابخانه شما آماده است</h2>
+            <p>بیش از ۵۰ رمان در ژانرهای مختلف (ترسناک، عاشقانه، غمگین و...) برای شما آماده شده است. شروع به خواندن کنید!</p>
+        </div>
+    `;
+
+    // ۲. دادن ۱۰۰ سکه به کاربر (با تغییر مقدار localStorage)
+    let currentCoins = Number(localStorage.getItem("zinoCoins") || 0);
+    // فقط اگه قبلا سکه نگرفته بود، اضافه کن
+    if (!localStorage.getItem("zino_gift_claimed")) {
+        currentCoins += 100;
+        localStorage.setItem("zinoCoins", currentCoins);
+        localStorage.setItem("zino_gift_claimed", "true");
+    }
+    
+    // ثبت اینکه کاربر خوش‌آمدگویی رو دید
+    localStorage.setItem("zino_welcomed", "true");
+    
+} else {
+    // اگه بار دوم به بعد بود، فقط پیام‌های معمولی
+    notifList.innerHTML = `
+        <div class="item">
+            <h2>📢 به‌روزرسانی</h2>
+            <p>رمان‌های جدید به کتابخانه اضافه شدند. برای مشاهده به بخش رمان‌ها بروید.</p>
+        </div>
+        <div class="item">
+            <h2>🔔 خوش آمدید</h2>
+            <p>از اینکه همراه زینو رمان هستید سپاسگزاریم.</p>
+        </div>
+    `;
+}
+</script>
+</body>
+</html>

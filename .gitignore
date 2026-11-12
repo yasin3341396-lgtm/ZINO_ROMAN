@@ -1,0 +1,3 @@
+*.backup
+nagram/
+__pycache__/

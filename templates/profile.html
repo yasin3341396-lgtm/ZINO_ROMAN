@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>پروفایل | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:12px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.card{
+ padding:16px;
+ border-radius:18px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ margin-bottom:14px;
+}
+.card h2{
+ font-size:15px;
+ color:#d9c6ff;
+ margin:0 0 10px;
+}
+input,select,button{
+ width:100%;
+ padding:12px;
+ border-radius:14px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ color:#f2eaff;
+ font-size:14px;
+}
+button{
+ background:#7b2ff7;
+ color:#fff;
+ font-weight:bold;
+ cursor:pointer;
+}
+button.danger{
+ background:#8b1e3f;
+}
+label{
+ display:block;
+ font-size:12px;
+ color:#a68abb;
+ margin-bottom:6px;
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" href="/" aria-label="بازگشت">→</a>
+ <h1>پروفایل</h1>
+</header>
+
+<main>
+ <div class="card">
+  <h2>نام نمایشی</h2>
+  <label for="displayName">نام دلخواهت را بنویس</label>
+  <input id="displayName" placeholder="مثلاً: زینو">
+  <button type="button" id="saveName">ذخیره</button>
+ </div>
+
+ <div class="card">
+  <h2>تم برنامه</h2>
+  <label for="theme">حالت نمایش را انتخاب کن</label>
+  <select id="theme">
+   <option value="dark">تیره</option>
+   <option value="light">روشن</option>
+  </select>
+ </div>
+
+ <div class="card">
+  <h2>داده‌ها</h2>
+  <p style="font-size:12px;color:#a68abb;margin:0 0 10px">
+   با این کار سکه‌ها، نام نمایشی و تنظیمات پاک می‌شوند.
+  </p>
+  <button class="danger" type="button" id="clearData">پاک‌کردن داده‌ها</button>
+ </div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const nameInput = document.getElementById("displayName");
+const saveName = document.getElementById("saveName");
+const themeSelect = document.getElementById("theme");
+const clearData = document.getElementById("clearData");
+
+nameInput.value = localStorage.getItem("zinoName") || "";
+themeSelect.value = localStorage.getItem("zinoTheme") || "dark";
+
+saveName.addEventListener("click", () => {
+ const value = nameInput.value.trim();
+ localStorage.setItem("zinoName", value);
+ alert(value ? "نام ذخیره شد." : "نام پاک شد.");
+});
+
+themeSelect.addEventListener("change", () => {
+ localStorage.setItem("zinoTheme", themeSelect.value);
+ alert("تم ذخیره شد.");
+});
+
+clearData.addEventListener("click", () => {
+ if(!confirm("مطمئنی؟ همهٔ داده‌های ذخیره‌شده پاک می‌شوند.")) return;
+
+ localStorage.removeItem("zinoName");
+ localStorage.removeItem("zinoTheme");
+ localStorage.removeItem("zinoCoins");
+ localStorage.removeItem("zinoLastReward");
+
+ nameInput.value = "";
+ themeSelect.value = "dark";
+ alert("داده‌ها پاک شدند.");
+});
+</script>
+</body>
+</html>

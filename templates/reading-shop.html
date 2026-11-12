@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فروشگاه خواندن | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
+  }
+
+  body {
+    min-height:100vh;
+    background:#0b0614;
+    color:#f2eaff;
+    display:flex;
+    flex-direction:column;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+  }
+
+  .top-bar {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+  }
+
+  .back-btn {
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(123,47,247,.55);
+    background:linear-gradient(145deg,#1b0d2e,#2b1049);
+    color:#c39bff;
+    font-size:22px;
+    cursor:pointer;
+  }
+
+  .page-title {
+    font-size:20px;
+    font-weight:bold;
+    color:#c39bff;
+  }
+
+  .section {
+    margin-bottom:22px;
+  }
+
+  .section-title {
+    font-size:17px;
+    color:#c39bff;
+    margin-bottom:12px;
+  }
+
+  .items {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+
+  .card {
+    padding:14px;
+    border-radius:18px;
+    border:1px solid rgba(123,47,247,.4);
+    background:linear-gradient(145deg,#160a26,#2b1049);
+    text-align:center;
+    box-shadow:0 10px 22px rgba(0,0,0,.4);
+  }
+
+  .preview {
+    height:80px;
+    border-radius:14px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    background:rgba(123,47,247,.12);
+  }
+
+  .name {
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:6px;
+  }
+
+  .price {
+    font-size:13px;
+    color:#ffd76a;
+    margin-bottom:10px;
+  }
+
+  .buy-btn {
+    width:100%;
+    padding:9px;
+    border:none;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(90deg,#7b2ff7,#a55bff);
+  }
+
+  .buy-btn.owned {
+    background:linear-gradient(90deg,#00c853,#00e676);
+    color:#04240f;
+  }
+
+  .footer {
+    margin-top:auto;
+    padding-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#8f7bb0;
+    line-height:1.6;
+  }
+
+  .footer strong {
+    color:#c39bff;
+  }
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <button class="back-btn" onclick="location.href='/store'">‹</button>
+    <h1 class="page-title">فروشگاه خواندن</h1>
+  </header>
+
+  <main>
+
+    <section class="section">
+      <h2 class="section-title">تم‌های اختصاصی مطالعه</h2>
+
+      <div class="items">
+        <div class="card">
+          <div class="preview">🌙</div>
+          <div class="name">تم شب بنفش</div>
+          <div class="price">150 سکه</div>
+          <button class="buy-btn" data-id="theme_purple_night" data-price="150">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">☕</div>
+          <div class="name">تم قهوه‌ای</div>
+          <div class="price">180 سکه</div>
+          <button class="buy-btn" data-id="theme_coffee" data-price="180">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🌿</div>
+          <div class="name">تم جنگلی</div>
+          <div class="price">200 سکه</div>
+          <button class="buy-btn" data-id="theme_forest" data-price="200">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🌊</div>
+          <div class="name">تم اقیانوس</div>
+          <div class="price">220 سکه</div>
+          <button class="buy-btn" data-id="theme_ocean" data-price="220">خرید</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">فونت‌های ویژه</h2>
+
+      <div class="items">
+        <div class="card">
+          <div class="preview">🅰</div>
+          <div class="name">فونت وزیرمتن</div>
+          <div class="price">200 سکه</div>
+          <button class="buy-btn" data-id="font_vazir" data-price="200">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🅰</div>
+          <div class="name">فونت ایران‌سنس</div>
+          <div class="price">250 سکه</div>
+          <button class="buy-btn" data-id="font_iransans" data-price="250">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🅰</div>
+          <div class="name">فونت لاله‌زار</div>
+          <div class="price">300 سکه</div>
+          <button class="buy-btn" data-id="font_lalezar" data-price="300">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🅰</div>
+          <div class="name">فونت سحر</div>
+          <div class="price">350 سکه</div>
+          <button class="buy-btn" data-id="font_sahar" data-price="350">خرید</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">پس‌زمینه‌های متنوع</h2>
+
+      <div class="items">
+        <div class="card">
+          <div class="preview">🌌</div>
+          <div class="name">پس‌زمینهٔ کهکشان</div>
+          <div class="price">180 سکه</div>
+          <button class="buy-btn" data-id="bg_galaxy" data-price="180">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🌸</div>
+          <div class="name">پس‌زمینهٔ گل</div>
+          <div class="price">150 سکه</div>
+          <button class="buy-btn" data-id="bg_flower" data-price="150">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🏔</div>
+          <div class="name">پس‌زمینهٔ کوه</div>
+          <div class="price">200 سکه</div>
+          <button class="buy-btn" data-id="bg_mountain" data-price="200">خرید</button>
+        </div>
+
+        <div class="card">
+          <div class="preview">🌊</div>
+          <div class="name">پس‌زمینهٔ دریا</div>
+          <div class="price">220 سکه</div>
+          <button class="buy-btn" data-id="bg_sea" data-price="220">خرید</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <strong>ZINO ROMAN</strong><br>
+    تاریخ ساخت: 2026/11/09
+  </footer>
+
+<script>
+  let coins = parseInt(localStorage.getItem("zino_coins") || "100");
+  const coinCount = document.getElementById("coinCount");
+
+  function updateCoins() {
+    coinCount.textContent = coins;
+  }
+
+  function checkOwned(id, button) {
+    if (localStorage.getItem("zino_owned_" + id) === "true") {
+      button.textContent = "خریداری شد";
+      button.classList.add("owned");
+    }
+  }
+
+  document.querySelectorAll(".buy-btn").forEach(button => {
+    const id = button.dataset.id;
+    const price = parseInt(button.dataset.price);
+
+    checkOwned(id, button);
+
+    button.addEventListener("click", () => {
+      if (localStorage.getItem("zino_owned_" + id) === "true") return;
+
+      if (coins < price) {
+        alert("سکه کافی نداری");
+        return;
+      }
+
+      coins -= price;
+      localStorage.setItem("zino_coins", coins);
+      localStorage.setItem("zino_owned_" + id, "true");
+
+      updateCoins();
+      checkOwned(id, button);
+    });
+  });
+
+  updateCoins();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>خواندن | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+ user-select:none;
+ -webkit-user-select:none;
+ -webkit-touch-callout:none;
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:10px}
+h1{font-size:18px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.music{
+ margin-left:auto;
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+ border:1px solid #7b2ff7;
+}
+.reader{
+ padding:18px;
+ border-radius:18px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ line-height:1.9;
+ font-size:17px;
+ white-space:pre-line;
+ min-height:300px;
+}
+.progress{
+ margin:16px 0;
+ font-size:13px;
+ color:#c39bff;
+ text-align:center;
+}
+.buttons{
+ display:flex;
+ gap:10px;
+ margin-top:auto;
+}
+button{
+ flex:1;
+ padding:14px;
+ border:0;
+ border-radius:14px;
+ color:white;
+ font:inherit;
+ font-weight:bold;
+ cursor:pointer;
+ background:linear-gradient(135deg,#913cff,#6222af);
+}
+.secondary{
+ background:#26103e;
+ border:1px solid #7b2ff7;
+ color:#d9c6ff;
+}
+.loading{
+ text-align:center;
+ padding:40px 20px;
+ color:#c39bff;
+ font-size:16px;
+}
+.coming-soon{
+ text-align:center;
+ padding:40px 20px;
+}
+.coming-soon .icon{
+ font-size:48px;
+ margin-bottom:16px;
+}
+.coming-soon h2{
+ color:#c39bff;
+ font-size:20px;
+ margin:0 0 12px;
+}
+.coming-soon p{
+ color:#a68abb;
+ font-size:14px;
+ line-height:1.8;
+ margin:0 0 20px;
+}
+.back-btn{
+ display:inline-block;
+ padding:12px 24px;
+ border-radius:14px;
+ background:#26103e;
+ border:1px solid #7b2ff7;
+ color:#d9c6ff;
+ text-decoration:none;
+ font-size:14px;
+}
+footer{
+ padding-top:18px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" id="backLink" href="/chapters">→</a>
+ <h1 id="chapterTitle">مقدمه</h1>
+ <button class="music" aria-label="موزیک" onclick="window.open('/music','zinoMusic')">🎵</button>
+</header>
+
+<main>
+ <div class="reader" id="reader">
+  <div class="loading">در حال بارگذاری...</div>
+ </div>
+ <p class="progress" id="progress">پیشرفت خواندن: ۰٪</p>
+</main>
+
+<div class="buttons" id="buttonsBox">
+ <button class="secondary" onclick="history.back()">بازگشت</button>
+ <button id="nextBtn">فصل بعد</button>
+</div>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+
+<script>
+const params = new URLSearchParams(location.search);
+const genre = params.get("genre") || "love";
+const novel = params.get("novel") || "0";
+const chapter = params.get("chapter") || "intro";
+
+const tokenMap = {
+ "love-0":"81a8cc1a8d60",
+ "love-1":"6319417e4d44",
+ "love-2":"8b7e191fa7bc",
+ "love-3":"40ebc5ebfe5b",
+ "love-4":"ebca6f33d51b",
+ "love-5":"ea9d8f562be6",
+ "love-6":"4f5bfc26e3c7",
+ "love-7":"68124a10dd74",
+ "love-8":"9c24bc773bdf",
+ "horror-0":"2856c2c9c977",
+ "horror-1":"b1a28ae42a14",
+ "horror-2":"99610a98a750",
+ "horror-3":"d4b1025ea619",
+ "horror-4":"089af383f581",
+ "horror-5":"b5b7ff00d681",
+ "horror-6":"15aeeeac95ab",
+ "horror-7":"0d726afa75c1",
+ "horror-8":"f21b07f6f617",
+ "sad-0":"6cdd1344a64d",
+ "sad-1":"9d253c4f2a50",
+ "sad-2":"c9bacf381472",
+ "sad-3":"19ab1be1c8b4",
+ "sad-4":"b3c8f2122b16",
+ "sad-5":"64b8ae742331",
+ "sad-6":"8a998aef6cd9",
+ "sad-7":"a5b02a8e0166",
+ "sad-8":"54a83336651f",
+ "comedy-0":"ea34835b256a",
+ "comedy-1":"6fc830e02812",
+ "comedy-2":"3dbec2aa0f0d",
+ "comedy-3":"e14176ce8530",
+ "comedy-4":"8f03df766d5f",
+ "comedy-5":"96610f3915c0",
+ "comedy-6":"a715eff11850",
+ "comedy-7":"248ba6dfbdd2",
+ "comedy-8":"1a2ba13dda53",
+ "thriller-0":"f021a05f840c",
+ "thriller-1":"5f9a07d1f503",
+ "thriller-2":"c607ad0ba3d3",
+ "thriller-3":"5b2ae85c772d",
+ "thriller-4":"70136cfc60c6",
+ "thriller-5":"11071d3e3706",
+ "thriller-6":"5aea6b56d351",
+ "thriller-7":"df81d2446c72",
+ "thriller-8":"832949d7fc7f",
+ "mystery-0":"818dbe94febe",
+ "mystery-1":"b7f81996bd7c",
+ "mystery-2":"e22cc215af82",
+ "mystery-3":"5d2274d8d75a",
+ "mystery-4":"4ccec64c1fe6",
+ "mystery-5":"d8558122222d",
+ "mystery-6":"1129624f3596",
+ "mystery-7":"65bf43d64268",
+ "mystery-8":"7229ddc665d8",
+};
+
+const token = tokenMap[`${genre}-${novel}`] || "";
+
+document.getElementById("backLink").href = `/chapters?genre=${genre}&novel=${novel}`;
+
+const reader = document.getElementById("reader");
+const chapterTitle = document.getElementById("chapterTitle");
+const progress = document.getElementById("progress");
+const nextBtn = document.getElementById("nextBtn");
+const buttonsBox = document.getElementById("buttonsBox");
+
+let totalChapters = 10;
+
+function showComingSoon(){
+ chapterTitle.textContent = "به‌زودی";
+ reader.innerHTML = `
+  <div class="coming-soon">
+   <div class="icon">📖</div>
+   <h2>این رمان به‌زودی...</h2>
+   <p>متن این رمان هنوز آماده نشده.<br>به‌زودی در دسترس قرار می‌گیرد.</p>
+   <a class="back-btn" href="/chapters?genre=${genre}&novel=${novel}">بازگشت به فصل‌ها</a>
+  </div>
+ `;
+ progress.style.display = "none";
+ buttonsBox.style.display = "none";
+}
+
+function showError(msg){
+ chapterTitle.textContent = "خطا";
+ reader.innerHTML = `<div class="loading">⚠️ ${msg}</div>`;
+ progress.style.display = "none";
+ buttonsBox.style.display = "none";
+}
+
+async function loadContent(){
+ if(!token){
+  showComingSoon();
+  return;
+ }
+
+ try{
+  const res = await fetch(`/api/content/${token}/${chapter}`);
+
+  if(res.status === 404){
+   const data = await res.json();
+   if(data.error === "coming_soon" || data.error === "not_found"){
+    showComingSoon();
+    return;
+   }
+   showError("فصل مورد نظر پیدا نشد.");
+   return;
+  }
+
+  if(!res.ok){
+   showError("خطا در بارگذاری.");
+   return;
+  }
+
+  const data = await res.json();
+  totalChapters = data.total_chapters || 10;
+
+  if(chapter === "intro"){
+   chapterTitle.textContent = "مقدمه";
+   reader.textContent = data.intro;
+  }else{
+   chapterTitle.textContent = data.chapter.title;
+   reader.textContent = data.chapter.content;
+  }
+
+  updateNextButton();
+  window.scrollTo(0,0);
+  progress.textContent = "پیشرفت خواندن: ۰٪";
+
+ }catch(err){
+  showError("عدم اتصال به سرور.");
+ }
+}
+
+function updateNextButton(){
+ const currentNum = chapter === "intro" ? 0 : parseInt(chapter);
+
+ if(currentNum < totalChapters){
+  nextBtn.textContent = currentNum === 0 ? "شروع فصل ۱" : "فصل بعد";
+  nextBtn.disabled = false;
+  nextBtn.onclick = () => {
+   const next = currentNum + 1;
+   location.href = `/read?genre=${genre}&novel=${novel}&chapter=${next}`;
+  };
+ }else{
+  nextBtn.textContent = "پایان فصل‌ها";
+  nextBtn.disabled = true;
+ }
+}
+
+function updateProgress(){
+ const total = document.body.scrollHeight - window.innerHeight;
+ const read = window.scrollY;
+ const percent = total > 0 ? Math.min(100, Math.round((read / total) * 100)) : 0;
+ progress.textContent = "پیشرفت خواندن: " + percent + "٪";
+
+ if(percent >= 95){
+  localStorage.setItem(`zino_reading_${genre}_${novel}_${chapter}_completed`, "true");
+ }
+}
+
+window.addEventListener("scroll", updateProgress);
+
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("copy", e => e.preventDefault());
+document.addEventListener("cut", e => e.preventDefault());
+document.addEventListener("dragstart", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+ if(e.ctrlKey && ["c","x","s","p","u"].includes(e.key.toLowerCase())){
+  e.preventDefault();
+ }
+});
+
+loadContent();
+</script>
+</body>
+</html>

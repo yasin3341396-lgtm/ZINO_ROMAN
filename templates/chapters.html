@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>فصل‌ها | ZINO ROMAN</title>
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ background:#0b0614;
+ color:#f2eaff;
+ font-family:Tahoma,Arial,sans-serif;
+ padding:
+ max(16px,env(safe-area-inset-top))
+ max(16px,env(safe-area-inset-right))
+ max(16px,env(safe-area-inset-bottom))
+ max(16px,env(safe-area-inset-left));
+}
+header,main,footer{
+ width:100%;
+ max-width:620px;
+ margin-inline:auto;
+}
+header{display:flex;align-items:center;gap:10px}
+h1{font-size:20px;color:#c39bff}
+a{color:#eadcff;text-decoration:none}
+.back{
+ padding:12px;
+ border-radius:14px;
+ background:#26103e;
+}
+.info{
+ padding:16px;
+ border-radius:18px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ margin-bottom:16px;
+}
+.novel-name{
+ font-size:20px;
+ font-weight:bold;
+ color:#c39bff;
+ margin-bottom:8px;
+}
+.meta{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
+ font-size:12px;
+ color:#cbb5e9;
+}
+.meta div{
+ padding:8px;
+ border-radius:10px;
+ background:#2b1049;
+}
+.actions{
+ display:flex;
+ gap:8px;
+ margin-top:12px;
+}
+.action{
+ flex:1;
+ padding:10px;
+ border-radius:12px;
+ border:1px solid #7b2ff7;
+ background:#26103e;
+ color:#d9c6ff;
+ font-size:13px;
+ cursor:pointer;
+}
+.buy{
+ width:100%;
+ padding:14px;
+ margin:16px 0;
+ border:0;
+ border-radius:14px;
+ color:white;
+ font:inherit;
+ font-weight:bold;
+ cursor:pointer;
+ background:linear-gradient(135deg,#913cff,#6222af);
+}
+.buy.owned{
+ background:linear-gradient(135deg,#00c853,#00e676);
+ color:#04240f;
+}
+.chapters{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+}
+.chapter{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:14px;
+ border-radius:14px;
+ border:1px solid #583077;
+ background:#1b0d2e;
+ color:#f2eaff;
+ text-decoration:none;
+ font-size:14px;
+}
+.chapter.free{
+ border-color:#00e676;
+ color:#a7ffcd;
+}
+.chapter.locked{
+ opacity:.65;
+}
+.chapter.locked::after{
+ content:"🔒";
+}
+.chapter.completed{
+ border-color:#00e676;
+ color:#a7ffcd;
+}
+.chapter.completed::before{
+ content:"✅ ";
+}
+footer{
+ margin-top:auto;
+ padding-top:22px;
+ text-align:center;
+ font-size:11px;
+ line-height:1.8;
+ color:#a68abb;
+}
+footer strong{color:#c39bff}
+.loading{
+ text-align:center;
+ padding:20px;
+ color:#c39bff;
+}
+</style>
+</head>
+<body>
+<header>
+ <a class="back" id="backLink" href="/novels">→</a>
+ <h1>فصل‌ها</h1>
+</header>
+
+<main>
+ <section class="info">
+  <p class="novel-name" id="novelName">نام رمان</p>
+
+  <div class="meta">
+   <div>نویسنده: <span id="author">نویسندهٔ زینو</span></div>
+   <div>ژانر: <span id="genreName">—</span></div>
+   <div>فصل‌ها: <span id="chaptersCount">در حال بارگذاری...</span></div>
+   <div>بازدید: <span id="views">0</span></div>
+   <div>لایک: <span id="likes">0</span></div>
+   <div>امتیاز: <span id="rating">0 از ۵</span></div>
+   <div>وضعیت: <span id="status">در حال انتشار</span></div>
+   <div>نوع: <span id="type">اشتراکی</span></div>
+  </div>
+
+  <div class="actions">
+   <button class="action" id="likeBtn">🤍 لایک</button>
+   <button class="action" id="favoriteBtn">🤍 علاقه‌مندی</button>
+   <button class="action" id="rateBtn">⭐ امتیاز</button>
+   <button class="action" id="commentBtn">💬 دیدگاه</button>
+   <button class="action" id="shareBtn">📤 اشتراک‌گذاری</button>
+  </div>
+ </section>
+
+ <button class="buy" id="buyBtn">خرید رمان</button>
+
+ <div class="chapters" id="chaptersBox">
+  <a class="chapter free" id="introLink" href="#">
+   مقدمه
+  </a>
+ </div>
+</main>
+
+<footer>
+ <strong>ZINO ROMAN</strong><br>
+ تاریخ ساخت: 2026/11/09
+</footer>
+<script>
+const genreNames = {
+ love:"عشق و عاشقی",
+ horror:"ترس و دلهره",
+ sad:"اشک و غمگین",
+ comedy:"کمدی و طنز",
+ thriller:"هیجان و پلیسی",
+ mystery:"ماجراجویی و معمایی"
+};
+
+const params = new URLSearchParams(location.search);
+const genre = params.get("genre") || "love";
+const novelIndex = parseInt(params.get("novel") || "0");
+
+const novelNames = {
+ love:["کافه کوچه","شاه ماهی","رزیتا","اشک های ماه","آیین دلبر","سوگند یک اورک","به طعم تمشک","آریل","ته دیگمو پس بده"],
+ horror:["اتاق کاهگلی۱","اتاق کاهگلی۲","خط خون","هیولا شناس۱","هیولا شناس۲","گورستان","وحشت در جنگل","کژال منی","کورالین"],
+ sad:["نمیزارم بری","اشک عروسک","مرگ ماهی","از بام تا اسمان","دل من","کجای زندگیمی تو","نفسمو ازم نگیر","میراث من عذاب","رویای خیس"],
+ comedy:["بچه خوک","جادوی زمان","همکارم میشی","طرار","شیاطین سیاه","تلافی تا نابودی","کلاهداران","نقاب ششم","ابلیس ساده لوح"],
+ thriller:["اغوش گل یخ","همسر شیطان۱","همسر شیطان۲","عشق شیطان و ملکه شیطان","قبر های خالی","خورشید من","پوکر","عشقی که تبخیر شد","گرگ بند"],
+ mystery:["بغض پر عصیان","زیر ایوان ماه","نفس نفس دل","ویرانی و قیام۳","بلاک کد","پشت پلک باران","دختران خاموش۱","دختران خاموش۲","طیف سرد"]
+};
+
+const novelName = (novelNames[genre] || [])[novelIndex] || "رمان";
+
+document.getElementById("novelName").textContent = novelName;
+document.getElementById("genreName").textContent = genreNames[genre] || "—";
+document.getElementById("backLink").href = `/novels?genre=${genre}`;
+
+const key = `zino_novel_${genre}_${novelIndex}`;
+
+let views = parseInt(localStorage.getItem(key + "_views") || "0") + 1;
+let likes = parseInt(localStorage.getItem(key + "_likes") || "0");
+
+localStorage.setItem(key + "_views", views);
+document.getElementById("views").textContent = views.toLocaleString("fa-IR");
+document.getElementById("likes").textContent = likes.toLocaleString("fa-IR");
+
+const introLink = document.getElementById("introLink");
+introLink.href = `/read?genre=${genre}&novel=${novelIndex}&chapter=intro`;
+
+const chaptersBox = document.getElementById("chaptersBox");
+const chaptersCount = document.getElementById("chaptersCount");
+const buyButton = document.getElementById("buyBtn");
+const likeButton = document.getElementById("likeBtn");
+const favoriteButton = document.getElementById("favoriteBtn");
+const rateButton = document.getElementById("rateBtn");
+const commentButton = document.getElementById("commentBtn");
+
+let TOTAL_CHAPTERS = 10;
+
+async function buildChapters(){
+ let count = 10;
+ 
+ try{
+  const tokenRes = await fetch(`/api/token/${genre}/${novelIndex}`);
+  if(tokenRes.ok){
+   const tokenData = await tokenRes.json();
+   const token = tokenData.token;
+   
+   const introRes = await fetch(`/api/content/${token}/intro`);
+   if(introRes.ok){
+    const introData = await introRes.json();
+    count = introData.total_chapters || 10;
+   }
+  }
+ }catch(e){
+  count = 10;
+ }
+ 
+ TOTAL_CHAPTERS = count;
+ chaptersCount.textContent = count.toLocaleString("fa-IR") + " فصل";
+ 
+ for(let i = 1; i <= count; i++){
+  const a = document.createElement("a");
+  a.className = "chapter locked";
+  a.href = "#";
+  a.textContent = "فصل " + i.toLocaleString("fa-IR");
+  chaptersBox.appendChild(a);
+ }
+ 
+ checkPurchase();
+ checkCompleted();
+ continueReading();
+}
+
+function checkPurchase(){
+ const owned = localStorage.getItem(key + "_owned") === "true";
+
+ if(owned){
+  buyButton.textContent = "خریداری شده";
+  buyButton.classList.add("owned");
+
+  document.querySelectorAll(".chapter.locked").forEach((chapter, index) => {
+   chapter.classList.remove("locked");
+   chapter.href = `/read?genre=${genre}&novel=${novelIndex}&chapter=${index + 1}`;
+  });
+ }
+}
+
+buyButton.addEventListener("click", () => {
+ if(localStorage.getItem(key + "_owned") === "true") return;
+ localStorage.setItem(key + "_owned", "true");
+ checkPurchase();
+});
+
+likeButton.addEventListener("click", () => {
+ likes++;
+ localStorage.setItem(key + "_likes", likes);
+ document.getElementById("likes").textContent = likes.toLocaleString("fa-IR");
+ likeButton.textContent = "❤️ لایک شد";
+});
+
+favoriteButton.addEventListener("click", () => {
+ const saved = localStorage.getItem(key + "_favorite") === "true";
+ localStorage.setItem(key + "_favorite", !saved);
+ favoriteButton.textContent = saved ? "🤍 علاقه‌مندی" : "💛 علاقه‌مندی";
+});
+
+rateButton.addEventListener("click", () => {
+ const value = prompt("امتیاز از ۱ تا ۵:");
+ const rating = parseInt(value);
+ if(rating >= 1 && rating <= 5){
+  localStorage.setItem(key + "_rating", rating);
+  document.getElementById("rating").textContent = rating + " از ۵";
+ }
+});
+
+commentButton.addEventListener("click", () => {
+ const comment = prompt("دیدگاهت را بنویس:");
+ if(comment){
+  localStorage.setItem(key + "_comment", comment);
+  alert("دیدگاه ثبت شد.");
+ }
+});
+
+document.getElementById("shareBtn").addEventListener("click", () => {
+ alert("اشتراک‌گذاری فعال نیست.");
+});
+
+function checkCompleted(){
+ const chapters = document.querySelectorAll(".chapter");
+
+ for(let i = 1; i <= TOTAL_CHAPTERS; i++){
+  const chapter = chapters[i];
+  if(!chapter) continue;
+
+  const completed = localStorage.getItem(
+   `zino_reading_${genre}_${novelIndex}_${i}_completed`
+  ) === "true";
+
+  if(completed){
+   chapter.classList.add("completed");
+  }
+ }
+}
+
+function continueReading(){
+ let lastChapter = "intro";
+
+ for(let i = 1; i <= TOTAL_CHAPTERS; i++){
+  const progress = localStorage.getItem(
+   `zino_reading_${genre}_${novelIndex}_${i}_progress`
+  );
+  if(progress !== null){
+   lastChapter = String(i);
+  }
+ }
+
+ const continueLink = document.createElement("a");
+ continueLink.className = "chapter free";
+ continueLink.href = `/read?genre=${genre}&novel=${novelIndex}&chapter=${lastChapter}`;
+ continueLink.textContent = "ادامهٔ مطالعه";
+
+ chaptersBox.insertBefore(continueLink, chaptersBox.children[1]);
+}
+
+buildChapters();
+</script>
+</body>
+</html>
